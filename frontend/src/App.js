@@ -74,24 +74,149 @@ const AuthContext = ({ children }) => {
 };
 
 // Logo Component
-const Logo = ({ size = "default" }) => {
+const Logo = ({ size = "default", collapsed = false }) => {
   const sizeClasses = {
-    small: "text-xl",
-    default: "text-2xl",
-    large: "text-4xl"
+    small: "text-lg",
+    default: "text-xl",
+    large: "text-3xl"
   };
 
   return (
-    <div className={`logo ${sizeClasses[size]}`}>
+    <div className={`logo ${sizeClasses[size]} ${collapsed ? 'justify-center' : ''}`}>
       <div className="logo-icon">
-        <div className="relative">
-          <div className="absolute inset-0 bg-white rounded-full opacity-20"></div>
+        <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6">
+          <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+          <path d="M12 12L2 7" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+          <path d="M12 12L22 7" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+          <path d="M12 12V22" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+        </svg>
+      </div>
+      {!collapsed && (
+        <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent font-bold">
+          Scoperival
+        </span>
+      )}
+    </div>
+  );
+};
+
+// Sidebar Navigation Component
+const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => {
+  const menuItems = [
+    { id: 'overview', label: 'Overview', icon: '📊' },
+    { id: 'competitors', label: 'Competitors', icon: '🏢' },
+    { id: 'changes', label: 'Changes', icon: '🔄' },
+    { id: 'analytics', label: 'Analytics', icon: '📈' },
+    { id: 'settings', label: 'Settings', icon: '⚙️' }
+  ];
+
+  return (
+    <div className={`sidebar ${collapsed ? 'sidebar-collapsed' : ''}`}>
+      <div className="sidebar-header">
+        <Logo size="default" collapsed={collapsed} />
+        <button 
+          onClick={() => setCollapsed(!collapsed)}
+          className="collapse-btn"
+        >
+          {collapsed ? '→' : '←'}
+        </button>
+      </div>
+      
+      <div className="sidebar-search">
+        {!collapsed && (
+          <div className="search-input-container">
+            <span className="search-icon">🔍</span>
+            <input 
+              type="text" 
+              placeholder="Search competitors..." 
+              className="sidebar-search-input"
+            />
+          </div>
+        )}
+      </div>
+
+      <nav className="sidebar-nav">
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setActiveTab(item.id)}
+            className={`sidebar-nav-item ${activeTab === item.id ? 'active' : ''}`}
+            title={collapsed ? item.label : ''}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            {!collapsed && <span className="nav-label">{item.label}</span>}
+          </button>
+        ))}
+      </nav>
+
+      <div className="sidebar-footer">
+        <div className="user-profile">
+          <div className="user-avatar">
+            {user?.company_name?.charAt(0)?.toUpperCase() || 'U'}
+          </div>
+          {!collapsed && (
+            <div className="user-info">
+              <div className="user-name">{user?.company_name}</div>
+              <div className="user-email">{user?.email}</div>
+            </div>
+          )}
         </div>
       </div>
-      <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent font-bold">
-        Scoperival
-      </span>
     </div>
+  );
+};
+
+// Top Header Component
+const TopHeader = ({ user, logout, activeTab }) => {
+  const getPageTitle = (tab) => {
+    const titles = {
+      overview: 'Dashboard Overview',
+      competitors: 'Competitor Management',
+      changes: 'Change Analysis',
+      analytics: 'Analytics',
+      settings: 'Settings'
+    };
+    return titles[tab] || 'Dashboard';
+  };
+
+  return (
+    <header className="top-header">
+      <div className="header-left">
+        <h1 className="page-title">{getPageTitle(activeTab)}</h1>
+        <p className="page-subtitle">AI-powered competitive intelligence platform</p>
+      </div>
+      
+      <div className="header-right">
+        <div className="header-stats">
+          <div className="stat-item">
+            <span className="stat-label">Status</span>
+            <span className="stat-value active">Active</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-label">Last Updated</span>
+            <span className="stat-value">{new Date().toLocaleDateString()}</span>
+          </div>
+        </div>
+        
+        <div className="header-actions">
+          <button className="notification-btn">
+            🔔
+            <span className="notification-badge">3</span>
+          </button>
+          
+          <div className="user-menu">
+            <div className="user-avatar-header">
+              {user?.company_name?.charAt(0)?.toUpperCase() || 'U'}
+            </div>
+            <div className="user-dropdown">
+              <button onClick={logout} className="logout-btn">
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 };
 
@@ -205,6 +330,7 @@ const Dashboard = ({ user, logout }) => {
   const [changes, setChanges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -240,139 +366,176 @@ const Dashboard = ({ user, logout }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-electric">
-      {/* Header */}
-      <header className="bg-slate-800/50 backdrop-blur-lg border-b border-slate-700/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Logo />
-            <div className="flex items-center space-x-6">
-              <div className="hidden md:flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-slate-300 text-sm">{user.company_name}</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <span className="text-slate-400 text-sm hidden md:block">{user.email}</span>
-                <button
-                  onClick={logout}
-                  className="btn-secondary text-sm"
-                >
-                  Sign Out
-                </button>
-              </div>
-            </div>
+    <div className="dashboard-layout">
+      <Sidebar 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab}
+        collapsed={sidebarCollapsed}
+        setCollapsed={setSidebarCollapsed}
+        user={user}
+      />
+      
+      <div className={`main-content ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+        <TopHeader user={user} logout={logout} activeTab={activeTab} />
+        
+        <div className="content-area">
+          <div className="fade-in">
+            {activeTab === 'overview' && <OverviewTab stats={stats} competitors={competitors} changes={changes} />}
+            {activeTab === 'competitors' && <CompetitorsTab competitors={competitors} onRefresh={fetchDashboardData} />}
+            {activeTab === 'changes' && <ChangesTab changes={changes} competitors={competitors} />}
+            {activeTab === 'analytics' && <AnalyticsTab stats={stats} competitors={competitors} changes={changes} />}
+            {activeTab === 'settings' && <SettingsTab user={user} />}
           </div>
         </div>
-      </header>
-
-      {/* Navigation */}
-      <nav className="bg-slate-800/30 backdrop-blur-lg border-b border-slate-700/30">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex space-x-8">
-            {[
-              { id: 'overview', label: 'Overview', icon: '📊' },
-              { id: 'competitors', label: 'Competitors', icon: '🏢' },
-              { id: 'changes', label: 'Changes', icon: '🔄' }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`nav-tab flex items-center space-x-2 ${
-                  activeTab === tab.id ? 'active' : ''
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </nav>
-
-      {/* Content */}
-      <main className="max-w-7xl mx-auto py-8 px-6 lg:px-8">
-        <div className="fade-in">
-          {activeTab === 'overview' && <OverviewTab stats={stats} />}
-          {activeTab === 'competitors' && <CompetitorsTab competitors={competitors} onRefresh={fetchDashboardData} />}
-          {activeTab === 'changes' && <ChangesTab changes={changes} competitors={competitors} />}
-        </div>
-      </main>
+      </div>
     </div>
   );
 };
 
-// Overview Tab
-const OverviewTab = ({ stats }) => (
-  <div className="space-y-8">
-    <div className="flex items-center justify-between">
-      <h2 className="text-3xl font-bold text-white">Dashboard Overview</h2>
-      <div className="text-sm text-slate-400">
-        Last updated: {new Date().toLocaleTimeString()}
-      </div>
-    </div>
-    
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="stat-card">
-        <div className="stat-icon blue">
-          🏢
-        </div>
-        <p className="text-sm font-medium text-slate-400 mb-1">Total Competitors</p>
-        <p className="text-3xl font-bold text-white">{stats.total_competitors || 0}</p>
-      </div>
-      
-      <div className="stat-card">
-        <div className="stat-icon green">
-          📊
-        </div>
-        <p className="text-sm font-medium text-slate-400 mb-1">Tracked Pages</p>
-        <p className="text-3xl font-bold text-white">{stats.total_tracked_pages || 0}</p>
-      </div>
-      
-      <div className="stat-card">
-        <div className="stat-icon yellow">
-          🔄
-        </div>
-        <p className="text-sm font-medium text-slate-400 mb-1">Recent Changes</p>
-        <p className="text-3xl font-bold text-white">{stats.recent_changes || 0}</p>
-      </div>
-      
-      <div className="stat-card">
-        <div className="stat-icon red">
-          ⚡
-        </div>
-        <p className="text-sm font-medium text-slate-400 mb-1">High Priority</p>
-        <p className="text-3xl font-bold text-white">{stats.high_significance_changes || 0}</p>
-      </div>
-    </div>
+// Overview Tab with new layout
+const OverviewTab = ({ stats, competitors, changes }) => {
+  const recentChanges = changes.slice(0, 3);
+  const topCompetitors = competitors.slice(0, 5);
 
-    <div className="modern-card p-8">
-      <h3 className="text-xl font-semibold text-white mb-6">Getting Started</h3>
-      <div className="space-y-4">
-        {[
-          { step: 1, text: "Add your first competitor in the Competitors tab", completed: stats.total_competitors > 0 },
-          { step: 2, text: "Select pages to track (pricing, features, blog, etc.)", completed: stats.total_tracked_pages > 0 },
-          { step: 3, text: "Run manual scans or wait for automated monitoring", completed: false },
-          { step: 4, text: "Review AI-powered insights in the Changes tab", completed: stats.recent_changes > 0 }
-        ].map((item, index) => (
-          <div key={index} className="flex items-center space-x-4">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-              item.completed 
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
-                : 'bg-slate-700 text-slate-400 border border-slate-600'
-            }`}>
-              {item.completed ? '✓' : item.step}
+  return (
+    <div className="overview-layout">
+      {/* Main Stats Section */}
+      <div className="stats-section">
+        <div className="stats-grid">
+          <div className="stat-card primary">
+            <div className="stat-header">
+              <span className="stat-icon">📊</span>
+              <span className="stat-trend up">+12%</span>
             </div>
-            <span className={item.completed ? 'text-slate-300' : 'text-slate-400'}>
-              {item.text}
-            </span>
+            <div className="stat-content">
+              <h3 className="stat-number">{stats.total_competitors || 0}</h3>
+              <p className="stat-label">Total Competitors</p>
+            </div>
           </div>
-        ))}
+          
+          <div className="stat-card">
+            <div className="stat-header">
+              <span className="stat-icon">🔍</span>
+              <span className="stat-trend up">+8%</span>
+            </div>
+            <div className="stat-content">
+              <h3 className="stat-number">{stats.total_tracked_pages || 0}</h3>
+              <p className="stat-label">Tracked Pages</p>
+            </div>
+          </div>
+          
+          <div className="stat-card">
+            <div className="stat-header">
+              <span className="stat-icon">🔄</span>
+              <span className="stat-trend down">-3%</span>
+            </div>
+            <div className="stat-content">
+              <h3 className="stat-number">{stats.recent_changes || 0}</h3>
+              <p className="stat-label">Recent Changes</p>
+            </div>
+          </div>
+          
+          <div className="stat-card">
+            <div className="stat-header">
+              <span className="stat-icon">⚡</span>
+              <span className="stat-trend up">+15%</span>
+            </div>
+            <div className="stat-content">
+              <h3 className="stat-number">{stats.high_significance_changes || 0}</h3>
+              <p className="stat-label">High Priority</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Two Column Layout */}
+      <div className="two-column-layout">
+        {/* Left Column - Recent Changes */}
+        <div className="left-column">
+          <div className="section-card">
+            <div className="section-header">
+              <h3>Recent Changes</h3>
+              <button className="view-all-btn">View All</button>
+            </div>
+            <div className="changes-list">
+              {recentChanges.length > 0 ? (
+                recentChanges.map((change, index) => (
+                  <div key={index} className="change-item">
+                    <div className="change-avatar">
+                      <span className="competitor-initial">
+                        {competitors.find(c => c.id === change.competitor_id)?.company_name?.charAt(0) || 'C'}
+                      </span>
+                    </div>
+                    <div className="change-details">
+                      <h4 className="change-title">{change.change_summary}</h4>
+                      <p className="change-meta">
+                        {competitors.find(c => c.id === change.competitor_id)?.company_name || 'Unknown'} • 
+                        {new Date(change.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className={`significance-badge small ${change.significance_score >= 4 ? 'high' : change.significance_score >= 3 ? 'medium' : 'low'}`}>
+                      {change.significance_score}/5
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <span className="empty-icon">📊</span>
+                  <p>No recent changes detected</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column - Competitor List */}
+        <div className="right-column">
+          <div className="section-card">
+            <div className="section-header">
+              <h3>Top Competitors</h3>
+              <button className="add-competitor-btn">+ Add Competitor</button>
+            </div>
+            <div className="competitors-table">
+              <div className="table-header">
+                <span>Company</span>
+                <span>Pages</span>
+                <span>Changes</span>
+                <span>Status</span>
+              </div>
+              {topCompetitors.length > 0 ? (
+                topCompetitors.map((competitor, index) => (
+                  <div key={index} className="table-row">
+                    <div className="competitor-info">
+                      <div className="competitor-avatar">
+                        {competitor.company_name.charAt(0)}
+                      </div>
+                      <div>
+                        <div className="competitor-name">{competitor.company_name}</div>
+                        <div className="competitor-domain">{competitor.domain}</div>
+                      </div>
+                    </div>
+                    <span className="pages-count">{competitor.tracked_pages?.length || 0}</span>
+                    <span className="changes-count">
+                      {changes.filter(c => c.competitor_id === competitor.id).length}
+                    </span>
+                    <span className="status-badge active">Active</span>
+                  </div>
+                ))
+              ) : (
+                <div className="empty-state">
+                  <span className="empty-icon">🏢</span>
+                  <p>No competitors added yet</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-// Competitors Tab
+// Enhanced Competitors Tab
 const CompetitorsTab = ({ competitors, onRefresh }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newCompetitor, setNewCompetitor] = useState({ domain: '', company_name: '' });
@@ -444,174 +607,165 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-white">Competitors</h2>
+    <div className="competitors-page">
+      <div className="page-actions">
         <button
           onClick={() => setShowAddForm(true)}
           className="btn-electric"
         >
-          Add Competitor
+          + Add Competitor
         </button>
       </div>
 
       {showAddForm && (
-        <div className="modern-card p-6 slide-up">
-          <h3 className="text-xl font-semibold text-white mb-6">Add New Competitor</h3>
-          
-          {!suggestions.length ? (
-            <form onSubmit={handleAddCompetitor} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Domain</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="stripe.com"
-                    className="modern-input w-full"
-                    value={newCompetitor.domain}
-                    onChange={(e) => setNewCompetitor({...newCompetitor, domain: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Company Name</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Stripe Inc."
-                    className="modern-input w-full"
-                    value={newCompetitor.company_name}
-                    onChange={(e) => setNewCompetitor({...newCompetitor, company_name: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="flex space-x-4">
-                <button
-                  type="submit"
-                  className="btn-electric"
-                >
-                  Discover Pages
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAddForm(false)}
-                  className="btn-secondary"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          ) : (
-            <div>
-              <h4 className="font-medium text-white mb-4">Select pages to track:</h4>
-              <div className="space-y-3 mb-6">
-                {suggestions.map((suggestion, index) => (
-                  <label key={index} className="flex items-center p-3 rounded-lg bg-slate-700/30 hover:bg-slate-700/50 transition-colors cursor-pointer">
+        <div className="add-competitor-form">
+          <div className="form-card">
+            <h3>Add New Competitor</h3>
+            
+            {!suggestions.length ? (
+              <form onSubmit={handleAddCompetitor} className="competitor-form">
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Domain</label>
                     <input
-                      type="checkbox"
-                      checked={selectedPages.some(p => p.url === suggestion.url)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedPages([...selectedPages, { url: suggestion.url, page_type: suggestion.page_type }]);
-                        } else {
-                          setSelectedPages(selectedPages.filter(p => p.url !== suggestion.url));
-                        }
-                      }}
-                      className="mr-3 text-blue-500"
+                      type="text"
+                      required
+                      placeholder="stripe.com"
+                      className="modern-input"
+                      value={newCompetitor.domain}
+                      onChange={(e) => setNewCompetitor({...newCompetitor, domain: e.target.value})}
                     />
-                    <div>
-                      <span className="text-blue-400 font-medium capitalize">{suggestion.page_type}</span>
-                      <span className="text-slate-400 ml-2 text-sm">{suggestion.url}</span>
-                    </div>
-                  </label>
-                ))}
+                  </div>
+                  <div className="form-group">
+                    <label>Company Name</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Stripe Inc."
+                      className="modern-input"
+                      value={newCompetitor.company_name}
+                      onChange={(e) => setNewCompetitor({...newCompetitor, company_name: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="btn-electric">Discover Pages</button>
+                  <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary">Cancel</button>
+                </div>
+              </form>
+            ) : (
+              <div className="page-selection">
+                <h4>Select pages to track:</h4>
+                <div className="pages-grid">
+                  {suggestions.map((suggestion, index) => (
+                    <label key={index} className="page-option">
+                      <input
+                        type="checkbox"
+                        checked={selectedPages.some(p => p.url === suggestion.url)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedPages([...selectedPages, { url: suggestion.url, page_type: suggestion.page_type }]);
+                          } else {
+                            setSelectedPages(selectedPages.filter(p => p.url !== suggestion.url));
+                          }
+                        }}
+                      />
+                      <div className="page-info">
+                        <span className="page-type">{suggestion.page_type}</span>
+                        <span className="page-url">{suggestion.url}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+                <div className="form-actions">
+                  <button onClick={handleSavePages} className="btn-electric">Start Tracking</button>
+                  <button 
+                    onClick={() => {
+                      setShowAddForm(false);
+                      setSuggestions([]);
+                      setCurrentCompetitorId(null);
+                      setSelectedPages([]);
+                    }} 
+                    className="btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-              <div className="flex space-x-4">
-                <button
-                  onClick={handleSavePages}
-                  className="btn-electric"
-                >
-                  Start Tracking
-                </button>
-                <button
-                  onClick={() => {
-                    setShowAddForm(false);
-                    setSuggestions([]);
-                    setCurrentCompetitorId(null);
-                    setSelectedPages([]);
-                  }}
-                  className="btn-secondary"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="competitors-grid">
         {competitors.map((competitor) => (
-          <div key={competitor.id} className="competitor-card">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-white">{competitor.company_name}</h3>
-                <p className="text-blue-400 text-sm">{competitor.domain}</p>
+          <div key={competitor.id} className="competitor-card-detailed">
+            <div className="card-header">
+              <div className="competitor-info">
+                <div className="competitor-avatar large">
+                  {competitor.company_name.charAt(0)}
+                </div>
+                <div>
+                  <h3>{competitor.company_name}</h3>
+                  <p>{competitor.domain}</p>
+                </div>
               </div>
               <button
                 onClick={() => handleDeleteCompetitor(competitor.id)}
-                className="text-red-400 hover:text-red-300 transition-colors p-1"
+                className="delete-btn"
               >
                 ✕
               </button>
             </div>
             
-            <div className="space-y-3 mb-6">
-              <p className="text-slate-300 text-sm">
-                <span className="font-medium text-blue-400">{competitor.tracked_pages?.length || 0}</span> pages tracked
-              </p>
-              {competitor.tracked_pages?.slice(0, 3).map((page, index) => (
-                <div key={index} className="text-xs text-slate-400 bg-slate-700/30 px-2 py-1 rounded">
-                  <span className="text-blue-400 capitalize">{page.page_type}</span> • {new URL(page.url).pathname}
+            <div className="card-content">
+              <div className="stats-row">
+                <div className="stat">
+                  <span className="stat-number">{competitor.tracked_pages?.length || 0}</span>
+                  <span className="stat-label">Pages</span>
                 </div>
-              ))}
-              {competitor.tracked_pages?.length > 3 && (
-                <div className="text-xs text-slate-500">
-                  +{competitor.tracked_pages.length - 3} more pages
+                <div className="stat">
+                  <span className="stat-number">24h</span>
+                  <span className="stat-label">Frequency</span>
                 </div>
-              )}
+                <div className="stat">
+                  <span className="stat-number active">Active</span>
+                  <span className="stat-label">Status</span>
+                </div>
+              </div>
+              
+              <div className="tracked-pages">
+                {competitor.tracked_pages?.slice(0, 3).map((page, index) => (
+                  <div key={index} className="page-item">
+                    <span className="page-type-badge">{page.page_type}</span>
+                    <span className="page-path">{new URL(page.url).pathname}</span>
+                  </div>
+                ))}
+                {competitor.tracked_pages?.length > 3 && (
+                  <div className="more-pages">+{competitor.tracked_pages.length - 3} more</div>
+                )}
+              </div>
             </div>
             
-            <button
-              onClick={() => handleScan(competitor.id)}
-              disabled={scanning[competitor.id]}
-              className="btn-electric w-full"
-            >
-              {scanning[competitor.id] ? (
-                <div className="flex items-center justify-center">
-                  <div className="loading-spinner mr-2" style={{width: '16px', height: '16px'}}></div>
-                  Scanning...
-                </div>
-              ) : (
-                'Manual Scan'
-              )}
-            </button>
+            <div className="card-actions">
+              <button
+                onClick={() => handleScan(competitor.id)}
+                disabled={scanning[competitor.id]}
+                className="btn-electric full-width"
+              >
+                {scanning[competitor.id] ? 'Scanning...' : 'Scan Now'}
+              </button>
+            </div>
           </div>
         ))}
       </div>
 
       {competitors.length === 0 && (
-        <div className="text-center py-16">
-          <div className="text-6xl mb-6">🎯</div>
-          <h3 className="text-2xl font-semibold text-white mb-4">No competitors yet</h3>
-          <p className="text-slate-400 mb-8 max-w-md mx-auto">
-            Start monitoring your competition by adding your first competitor. 
-            We'll automatically discover their key pages and track changes.
-          </p>
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="btn-electric pulse-glow"
-          >
+        <div className="empty-state-large">
+          <div className="empty-icon">🎯</div>
+          <h3>No competitors yet</h3>
+          <p>Start monitoring your competition by adding your first competitor</p>
+          <button onClick={() => setShowAddForm(true)} className="btn-electric">
             Add Your First Competitor
           </button>
         </div>
@@ -620,7 +774,7 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   );
 };
 
-// Changes Tab
+// Changes Tab - keeping the existing implementation
 const ChangesTab = ({ changes, competitors }) => {
   const getCompetitorName = (competitorId) => {
     const competitor = competitors.find(c => c.id === competitorId);
@@ -644,74 +798,43 @@ const ChangesTab = ({ changes, competitors }) => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-white">Recent Changes</h2>
-        <div className="text-sm text-slate-400">
-          AI-powered competitive intelligence
-        </div>
-      </div>
-      
+    <div className="changes-page">
       {changes.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-6xl mb-6">🔄</div>
-          <h3 className="text-2xl font-semibold text-white mb-4">No changes detected yet</h3>
-          <p className="text-slate-400 max-w-md mx-auto">
-            Run scans on your competitors to see AI-powered insights about their strategic changes appear here.
-          </p>
+        <div className="empty-state-large">
+          <div className="empty-icon">🔄</div>
+          <h3>No changes detected yet</h3>
+          <p>Run scans on your competitors to see AI-powered insights here</p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="changes-list">
           {changes.map((change) => (
-            <div key={change.id} className="modern-card p-6 slide-up">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-1">
-                    {getCompetitorName(change.competitor_id)}
-                  </h3>
-                  <p className="text-slate-400 text-sm">
-                    {formatDate(change.created_at)}
-                  </p>
+            <div key={change.id} className="change-card">
+              <div className="change-header">
+                <div className="change-info">
+                  <h3>{getCompetitorName(change.competitor_id)}</h3>
+                  <p>{formatDate(change.created_at)}</p>
                 </div>
                 <span className={`significance-badge ${getSignificanceClass(change.significance_score)}`}>
                   Priority {change.significance_score}/5
                 </span>
               </div>
               
-              <div className="space-y-6">
-                <div>
-                  <h4 className="font-semibold text-blue-400 mb-2 flex items-center">
-                    <span className="mr-2">📝</span>
-                    What Changed
-                  </h4>
-                  <p className="text-slate-300 bg-slate-700/30 p-4 rounded-lg">
-                    {change.change_summary}
-                  </p>
+              <div className="change-content">
+                <div className="change-section">
+                  <h4>📝 What Changed</h4>
+                  <p>{change.change_summary}</p>
                 </div>
                 
-                <div>
-                  <h4 className="font-semibold text-blue-400 mb-2 flex items-center">
-                    <span className="mr-2">🧠</span>
-                    Strategic Implications
-                  </h4>
-                  <p className="text-slate-300 bg-slate-700/30 p-4 rounded-lg">
-                    {change.strategic_implications}
-                  </p>
+                <div className="change-section">
+                  <h4>🧠 Strategic Implications</h4>
+                  <p>{change.strategic_implications}</p>
                 </div>
                 
-                <div>
-                  <h4 className="font-semibold text-blue-400 mb-2 flex items-center">
-                    <span className="mr-2">⚡</span>
-                    Suggested Actions
-                  </h4>
-                  <ul className="space-y-2">
+                <div className="change-section">
+                  <h4>⚡ Suggested Actions</h4>
+                  <ul>
                     {change.suggested_actions.map((action, index) => (
-                      <li key={index} className="flex items-start text-slate-300">
-                        <span className="text-blue-400 mr-2 mt-1">•</span>
-                        <span className="bg-slate-700/30 px-3 py-2 rounded-lg flex-1">
-                          {action}
-                        </span>
-                      </li>
+                      <li key={index}>{action}</li>
                     ))}
                   </ul>
                 </div>
@@ -720,6 +843,77 @@ const ChangesTab = ({ changes, competitors }) => {
           ))}
         </div>
       )}
+    </div>
+  );
+};
+
+// New Analytics Tab
+const AnalyticsTab = ({ stats, competitors, changes }) => {
+  return (
+    <div className="analytics-page">
+      <div className="analytics-grid">
+        <div className="analytics-card">
+          <h3>Change Frequency</h3>
+          <div className="chart-placeholder">
+            <div className="chart-bars">
+              <div className="bar" style={{height: '60%'}}></div>
+              <div className="bar" style={{height: '80%'}}></div>
+              <div className="bar" style={{height: '40%'}}></div>
+              <div className="bar" style={{height: '90%'}}></div>
+              <div className="bar" style={{height: '70%'}}></div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="analytics-card">
+          <h3>Competitor Activity</h3>
+          <div className="activity-list">
+            {competitors.slice(0, 5).map((comp, index) => (
+              <div key={index} className="activity-item">
+                <span>{comp.company_name}</span>
+                <div className="activity-bar">
+                  <div className="activity-fill" style={{width: `${Math.random() * 100}%`}}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// New Settings Tab
+const SettingsTab = ({ user }) => {
+  return (
+    <div className="settings-page">
+      <div className="settings-card">
+        <h3>Account Settings</h3>
+        <div className="setting-item">
+          <label>Company Name</label>
+          <input type="text" value={user.company_name} className="modern-input" readOnly />
+        </div>
+        <div className="setting-item">
+          <label>Email</label>
+          <input type="email" value={user.email} className="modern-input" readOnly />
+        </div>
+      </div>
+      
+      <div className="settings-card">
+        <h3>Notification Settings</h3>
+        <div className="setting-item">
+          <label className="checkbox-label">
+            <input type="checkbox" defaultChecked />
+            Email notifications for high-priority changes
+          </label>
+        </div>
+        <div className="setting-item">
+          <label className="checkbox-label">
+            <input type="checkbox" defaultChecked />
+            Weekly summary reports
+          </label>
+        </div>
+      </div>
     </div>
   );
 };
