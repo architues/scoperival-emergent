@@ -607,8 +607,9 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   };
 
   return (
-    <div className="competitors-page">
-      <div className="page-actions">
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-white">Competitors</h2>
         <button
           onClick={() => setShowAddForm(true)}
           className="btn-electric"
@@ -618,154 +619,175 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
       </div>
 
       {showAddForm && (
-        <div className="add-competitor-form">
-          <div className="form-card">
-            <h3>Add New Competitor</h3>
-            
-            {!suggestions.length ? (
-              <form onSubmit={handleAddCompetitor} className="competitor-form">
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Domain</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="stripe.com"
-                      className="modern-input"
-                      value={newCompetitor.domain}
-                      onChange={(e) => setNewCompetitor({...newCompetitor, domain: e.target.value})}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Company Name</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Stripe Inc."
-                      className="modern-input"
-                      value={newCompetitor.company_name}
-                      onChange={(e) => setNewCompetitor({...newCompetitor, company_name: e.target.value})}
-                    />
-                  </div>
+        <div className="modern-card p-6 slide-up">
+          <h3 className="text-xl font-semibold text-white mb-6">Add New Competitor</h3>
+          
+          {!suggestions.length ? (
+            <form onSubmit={handleAddCompetitor} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Domain</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="stripe.com"
+                    className="modern-input w-full"
+                    value={newCompetitor.domain}
+                    onChange={(e) => setNewCompetitor({...newCompetitor, domain: e.target.value})}
+                  />
                 </div>
-                <div className="form-actions">
-                  <button type="submit" className="btn-electric">Discover Pages</button>
-                  <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary">Cancel</button>
-                </div>
-              </form>
-            ) : (
-              <div className="page-selection">
-                <h4>Select pages to track:</h4>
-                <div className="pages-grid">
-                  {suggestions.map((suggestion, index) => (
-                    <label key={index} className="page-option">
-                      <input
-                        type="checkbox"
-                        checked={selectedPages.some(p => p.url === suggestion.url)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedPages([...selectedPages, { url: suggestion.url, page_type: suggestion.page_type }]);
-                          } else {
-                            setSelectedPages(selectedPages.filter(p => p.url !== suggestion.url));
-                          }
-                        }}
-                      />
-                      <div className="page-info">
-                        <span className="page-type">{suggestion.page_type}</span>
-                        <span className="page-url">{suggestion.url}</span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-                <div className="form-actions">
-                  <button onClick={handleSavePages} className="btn-electric">Start Tracking</button>
-                  <button 
-                    onClick={() => {
-                      setShowAddForm(false);
-                      setSuggestions([]);
-                      setCurrentCompetitorId(null);
-                      setSelectedPages([]);
-                    }} 
-                    className="btn-secondary"
-                  >
-                    Cancel
-                  </button>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Company Name</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Stripe Inc."
+                    className="modern-input w-full"
+                    value={newCompetitor.company_name}
+                    onChange={(e) => setNewCompetitor({...newCompetitor, company_name: e.target.value})}
+                  />
                 </div>
               </div>
-            )}
-          </div>
+              <div className="flex space-x-4">
+                <button type="submit" className="btn-electric">
+                  Discover Pages
+                </button>
+                <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div>
+              <h4 className="font-medium text-white mb-4">Select pages to track:</h4>
+              <div className="space-y-3 mb-6">
+                {suggestions.map((suggestion, index) => (
+                  <label key={index} className="flex items-center p-3 rounded-lg bg-slate-700/30 hover:bg-slate-700/50 transition-colors cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedPages.some(p => p.url === suggestion.url)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedPages([...selectedPages, { url: suggestion.url, page_type: suggestion.page_type }]);
+                        } else {
+                          setSelectedPages(selectedPages.filter(p => p.url !== suggestion.url));
+                        }
+                      }}
+                      className="mr-3 text-blue-500"
+                    />
+                    <div>
+                      <span className="text-blue-400 font-medium capitalize">{suggestion.page_type}</span>
+                      <span className="text-slate-400 ml-2 text-sm">{suggestion.url}</span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <div className="flex space-x-4">
+                <button onClick={handleSavePages} className="btn-electric">
+                  Start Tracking
+                </button>
+                <button 
+                  onClick={() => {
+                    setShowAddForm(false);
+                    setSuggestions([]);
+                    setCurrentCompetitorId(null);
+                    setSelectedPages([]);
+                  }} 
+                  className="btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      <div className="competitors-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {competitors.map((competitor) => (
-          <div key={competitor.id} className="competitor-card-detailed">
-            <div className="card-header">
-              <div className="competitor-info">
-                <div className="competitor-avatar large">
-                  {competitor.company_name.charAt(0)}
+          <div key={competitor.id} className="modern-card p-6">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                  {competitor.company_name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h3>{competitor.company_name}</h3>
-                  <p>{competitor.domain}</p>
+                  <h3 className="text-lg font-semibold text-white">{competitor.company_name}</h3>
+                  <p className="text-blue-400 text-sm">{competitor.domain}</p>
                 </div>
               </div>
               <button
                 onClick={() => handleDeleteCompetitor(competitor.id)}
-                className="delete-btn"
+                className="text-red-400 hover:text-red-300 transition-colors p-1"
               >
                 ✕
               </button>
             </div>
             
-            <div className="card-content">
-              <div className="stats-row">
-                <div className="stat">
-                  <span className="stat-number">{competitor.tracked_pages?.length || 0}</span>
-                  <span className="stat-label">Pages</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-number">24h</span>
-                  <span className="stat-label">Frequency</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-number active">Active</span>
-                  <span className="stat-label">Status</span>
-                </div>
+            <div className="space-y-4 mb-6">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Pages Tracked</span>
+                <span className="text-blue-400 font-medium">{competitor.tracked_pages?.length || 0}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Scan Frequency</span>
+                <span className="text-slate-300">24h</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Status</span>
+                <span className="text-green-400 font-medium">Active</span>
               </div>
               
-              <div className="tracked-pages">
-                {competitor.tracked_pages?.slice(0, 3).map((page, index) => (
-                  <div key={index} className="page-item">
-                    <span className="page-type-badge">{page.page_type}</span>
-                    <span className="page-path">{new URL(page.url).pathname}</span>
-                  </div>
-                ))}
-                {competitor.tracked_pages?.length > 3 && (
-                  <div className="more-pages">+{competitor.tracked_pages.length - 3} more</div>
-                )}
-              </div>
+              {competitor.tracked_pages && competitor.tracked_pages.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-slate-400 text-sm">Tracking:</span>
+                  {competitor.tracked_pages.slice(0, 3).map((page, index) => (
+                    <div key={index} className="flex items-center space-x-2 text-xs">
+                      <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-md capitalize">
+                        {page.page_type}
+                      </span>
+                      <span className="text-slate-500">{new URL(page.url).pathname}</span>
+                    </div>
+                  ))}
+                  {competitor.tracked_pages.length > 3 && (
+                    <div className="text-xs text-slate-500">
+                      +{competitor.tracked_pages.length - 3} more pages
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             
-            <div className="card-actions">
-              <button
-                onClick={() => handleScan(competitor.id)}
-                disabled={scanning[competitor.id]}
-                className="btn-electric full-width"
-              >
-                {scanning[competitor.id] ? 'Scanning...' : 'Scan Now'}
-              </button>
-            </div>
+            <button
+              onClick={() => handleScan(competitor.id)}
+              disabled={scanning[competitor.id]}
+              className="btn-electric w-full"
+            >
+              {scanning[competitor.id] ? (
+                <div className="flex items-center justify-center">
+                  <div className="loading-spinner mr-2" style={{width: '16px', height: '16px'}}></div>
+                  Scanning...
+                </div>
+              ) : (
+                'Manual Scan'
+              )}
+            </button>
           </div>
         ))}
       </div>
 
       {competitors.length === 0 && (
-        <div className="empty-state-large">
-          <div className="empty-icon">🎯</div>
-          <h3>No competitors yet</h3>
-          <p>Start monitoring your competition by adding your first competitor</p>
-          <button onClick={() => setShowAddForm(true)} className="btn-electric">
+        <div className="text-center py-16">
+          <div className="text-6xl mb-6">🎯</div>
+          <h3 className="text-2xl font-semibold text-white mb-4">No competitors yet</h3>
+          <p className="text-slate-400 mb-8 max-w-md mx-auto">
+            Start monitoring your competition by adding your first competitor. 
+            We'll automatically discover their key pages and track changes.
+          </p>
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="btn-electric pulse-glow"
+          >
             Add Your First Competitor
           </button>
         </div>
