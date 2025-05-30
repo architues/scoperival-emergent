@@ -73,6 +73,28 @@ const AuthContext = ({ children }) => {
   );
 };
 
+// Logo Component
+const Logo = ({ size = "default" }) => {
+  const sizeClasses = {
+    small: "text-xl",
+    default: "text-2xl",
+    large: "text-4xl"
+  };
+
+  return (
+    <div className={`logo ${sizeClasses[size]}`}>
+      <div className="logo-icon">
+        <div className="relative">
+          <div className="absolute inset-0 bg-white rounded-full opacity-20"></div>
+        </div>
+      </div>
+      <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent font-bold">
+        Scoperival
+      </span>
+    </div>
+  );
+};
+
 // Login/Register Component
 const AuthForm = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -101,31 +123,33 @@ const AuthForm = ({ onLogin, onRegister }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+      <div className="auth-form w-full max-w-md fade-in">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">🎯 Scoperival</h1>
-          <p className="text-gray-600">Competitor Intelligence Platform</p>
+          <Logo size="large" />
+          <p className="text-slate-300 mt-4 text-lg">AI-Powered Competitor Intelligence</p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-slate-200 mb-2">Email Address</label>
             <input
               type="email"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="modern-input w-full"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-slate-200 mb-2">Password</label>
             <input
               type="password"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="modern-input w-full"
+              placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
             />
@@ -133,11 +157,12 @@ const AuthForm = ({ onLogin, onRegister }) => {
           
           {!isLogin && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+              <label className="block text-sm font-medium text-slate-200 mb-2">Company Name</label>
               <input
                 type="text"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="modern-input w-full"
+                placeholder="Enter your company name"
                 value={formData.company_name}
                 onChange={(e) => setFormData({...formData, company_name: e.target.value})}
               />
@@ -147,16 +172,23 @@ const AuthForm = ({ onLogin, onRegister }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+            className="btn-electric w-full"
           >
-            {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className="loading-spinner mr-2" style={{width: '16px', height: '16px'}}></div>
+                Processing...
+              </div>
+            ) : (
+              isLogin ? 'Sign In' : 'Create Account'
+            )}
           </button>
         </form>
         
-        <div className="mt-4 text-center">
+        <div className="mt-6 text-center">
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-blue-600 hover:text-blue-800 text-sm"
+            className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
           >
             {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
           </button>
@@ -196,67 +228,61 @@ const Dashboard = ({ user, logout }) => {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  const getSignificanceColor = (score) => {
-    if (score >= 4) return 'text-red-600 bg-red-100';
-    if (score >= 3) return 'text-yellow-600 bg-yellow-100';
-    return 'text-green-600 bg-green-100';
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your competitor intelligence...</p>
+      <div className="min-h-screen bg-gradient-electric flex items-center justify-center">
+        <div className="text-center fade-in">
+          <div className="loading-spinner mx-auto mb-6"></div>
+          <p className="text-slate-300 text-lg">Loading your competitive intelligence...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-electric">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="bg-slate-800/50 backdrop-blur-lg border-b border-slate-700/50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">🎯 Scoperival</h1>
-              <span className="ml-4 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                {user.company_name}
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">{user.email}</span>
-              <button
-                onClick={logout}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                Sign Out
-              </button>
+            <Logo />
+            <div className="flex items-center space-x-6">
+              <div className="hidden md:flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-slate-300 text-sm">{user.company_name}</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <span className="text-slate-400 text-sm hidden md:block">{user.email}</span>
+                <button
+                  onClick={logout}
+                  className="btn-secondary text-sm"
+                >
+                  Sign Out
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="bg-slate-800/30 backdrop-blur-lg border-b border-slate-700/30">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex space-x-8">
-            {['overview', 'competitors', 'changes'].map((tab) => (
+            {[
+              { id: 'overview', label: 'Overview', icon: '📊' },
+              { id: 'competitors', label: 'Competitors', icon: '🏢' },
+              { id: 'changes', label: 'Changes', icon: '🔄' }
+            ].map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
-                  activeTab === tab
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`nav-tab flex items-center space-x-2 ${
+                  activeTab === tab.id ? 'active' : ''
                 }`}
               >
-                {tab}
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
               </button>
             ))}
           </div>
@@ -264,10 +290,12 @@ const Dashboard = ({ user, logout }) => {
       </nav>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        {activeTab === 'overview' && <OverviewTab stats={stats} />}
-        {activeTab === 'competitors' && <CompetitorsTab competitors={competitors} onRefresh={fetchDashboardData} />}
-        {activeTab === 'changes' && <ChangesTab changes={changes} competitors={competitors} />}
+      <main className="max-w-7xl mx-auto py-8 px-6 lg:px-8">
+        <div className="fade-in">
+          {activeTab === 'overview' && <OverviewTab stats={stats} />}
+          {activeTab === 'competitors' && <CompetitorsTab competitors={competitors} onRefresh={fetchDashboardData} />}
+          {activeTab === 'changes' && <ChangesTab changes={changes} competitors={competitors} />}
+        </div>
       </main>
     </div>
   );
@@ -275,78 +303,70 @@ const Dashboard = ({ user, logout }) => {
 
 // Overview Tab
 const OverviewTab = ({ stats }) => (
-  <div>
-    <h2 className="text-2xl font-bold text-gray-900 mb-6">Dashboard Overview</h2>
+  <div className="space-y-8">
+    <div className="flex items-center justify-between">
+      <h2 className="text-3xl font-bold text-white">Dashboard Overview</h2>
+      <div className="text-sm text-slate-400">
+        Last updated: {new Date().toLocaleTimeString()}
+      </div>
+    </div>
     
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex items-center">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <span className="text-2xl">🏢</span>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">Competitors</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.total_competitors || 0}</p>
-          </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="stat-card">
+        <div className="stat-icon blue">
+          🏢
         </div>
+        <p className="text-sm font-medium text-slate-400 mb-1">Total Competitors</p>
+        <p className="text-3xl font-bold text-white">{stats.total_competitors || 0}</p>
       </div>
       
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex items-center">
-          <div className="p-2 bg-green-100 rounded-lg">
-            <span className="text-2xl">📊</span>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">Tracked Pages</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.total_tracked_pages || 0}</p>
-          </div>
+      <div className="stat-card">
+        <div className="stat-icon green">
+          📊
         </div>
+        <p className="text-sm font-medium text-slate-400 mb-1">Tracked Pages</p>
+        <p className="text-3xl font-bold text-white">{stats.total_tracked_pages || 0}</p>
       </div>
       
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex items-center">
-          <div className="p-2 bg-yellow-100 rounded-lg">
-            <span className="text-2xl">🔄</span>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">Recent Changes</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.recent_changes || 0}</p>
-          </div>
+      <div className="stat-card">
+        <div className="stat-icon yellow">
+          🔄
         </div>
+        <p className="text-sm font-medium text-slate-400 mb-1">Recent Changes</p>
+        <p className="text-3xl font-bold text-white">{stats.recent_changes || 0}</p>
       </div>
       
-      <div className="bg-white p-6 rounded-lg shadow">
-        <div className="flex items-center">
-          <div className="p-2 bg-red-100 rounded-lg">
-            <span className="text-2xl">⚡</span>
-          </div>
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-600">High Priority</p>
-            <p className="text-2xl font-bold text-gray-900">{stats.high_significance_changes || 0}</p>
-          </div>
+      <div className="stat-card">
+        <div className="stat-icon red">
+          ⚡
         </div>
+        <p className="text-sm font-medium text-slate-400 mb-1">High Priority</p>
+        <p className="text-3xl font-bold text-white">{stats.high_significance_changes || 0}</p>
       </div>
     </div>
 
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-medium text-gray-900 mb-4">Getting Started</h3>
-      <div className="space-y-3">
-        <div className="flex items-center text-sm">
-          <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium mr-3">1</span>
-          <span>Add your first competitor in the Competitors tab</span>
-        </div>
-        <div className="flex items-center text-sm">
-          <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium mr-3">2</span>
-          <span>Select pages to track (pricing, features, blog, etc.)</span>
-        </div>
-        <div className="flex items-center text-sm">
-          <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium mr-3">3</span>
-          <span>Run manual scans or wait for automated monitoring</span>
-        </div>
-        <div className="flex items-center text-sm">
-          <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-medium mr-3">4</span>
-          <span>Review AI-powered insights in the Changes tab</span>
-        </div>
+    <div className="modern-card p-8">
+      <h3 className="text-xl font-semibold text-white mb-6">Getting Started</h3>
+      <div className="space-y-4">
+        {[
+          { step: 1, text: "Add your first competitor in the Competitors tab", completed: stats.total_competitors > 0 },
+          { step: 2, text: "Select pages to track (pricing, features, blog, etc.)", completed: stats.total_tracked_pages > 0 },
+          { step: 3, text: "Run manual scans or wait for automated monitoring", completed: false },
+          { step: 4, text: "Review AI-powered insights in the Changes tab", completed: stats.recent_changes > 0 }
+        ].map((item, index) => (
+          <div key={index} className="flex items-center space-x-4">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+              item.completed 
+                ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                : 'bg-slate-700 text-slate-400 border border-slate-600'
+            }`}>
+              {item.completed ? '✓' : item.step}
+            </div>
+            <span className={item.completed ? 'text-slate-300' : 'text-slate-400'}>
+              {item.text}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   </div>
@@ -364,11 +384,9 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   const handleAddCompetitor = async (e) => {
     e.preventDefault();
     try {
-      // Create competitor
       const response = await axios.post(`${API}/competitors`, newCompetitor);
       const competitorId = response.data.id;
       
-      // Discover pages
       const suggestionsRes = await axios.post(`${API}/competitors/discover-pages`, {
         domain: newCompetitor.domain
       });
@@ -426,58 +444,58 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Competitors</h2>
+    <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <h2 className="text-3xl font-bold text-white">Competitors</h2>
         <button
           onClick={() => setShowAddForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          className="btn-electric"
         >
           Add Competitor
         </button>
       </div>
 
       {showAddForm && (
-        <div className="bg-white p-6 rounded-lg shadow mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Competitor</h3>
+        <div className="modern-card p-6 slide-up">
+          <h3 className="text-xl font-semibold text-white mb-6">Add New Competitor</h3>
           
           {!suggestions.length ? (
-            <form onSubmit={handleAddCompetitor} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <form onSubmit={handleAddCompetitor} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Domain</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Domain</label>
                   <input
                     type="text"
                     required
-                    placeholder="example.com"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="stripe.com"
+                    className="modern-input w-full"
                     value={newCompetitor.domain}
                     onChange={(e) => setNewCompetitor({...newCompetitor, domain: e.target.value})}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Company Name</label>
                   <input
                     type="text"
                     required
-                    placeholder="Company Name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Stripe Inc."
+                    className="modern-input w-full"
                     value={newCompetitor.company_name}
                     onChange={(e) => setNewCompetitor({...newCompetitor, company_name: e.target.value})}
                   />
                 </div>
               </div>
-              <div className="flex space-x-3">
+              <div className="flex space-x-4">
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  className="btn-electric"
                 >
                   Discover Pages
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowAddForm(false)}
-                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+                  className="btn-secondary"
                 >
                   Cancel
                 </button>
@@ -485,10 +503,10 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
             </form>
           ) : (
             <div>
-              <h4 className="font-medium text-gray-900 mb-3">Select pages to track:</h4>
-              <div className="space-y-2 mb-4">
+              <h4 className="font-medium text-white mb-4">Select pages to track:</h4>
+              <div className="space-y-3 mb-6">
                 {suggestions.map((suggestion, index) => (
-                  <label key={index} className="flex items-center">
+                  <label key={index} className="flex items-center p-3 rounded-lg bg-slate-700/30 hover:bg-slate-700/50 transition-colors cursor-pointer">
                     <input
                       type="checkbox"
                       checked={selectedPages.some(p => p.url === suggestion.url)}
@@ -499,18 +517,19 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
                           setSelectedPages(selectedPages.filter(p => p.url !== suggestion.url));
                         }
                       }}
-                      className="mr-3"
+                      className="mr-3 text-blue-500"
                     />
-                    <span className="text-sm">
-                      <span className="font-medium">{suggestion.page_type}</span> - {suggestion.url}
-                    </span>
+                    <div>
+                      <span className="text-blue-400 font-medium capitalize">{suggestion.page_type}</span>
+                      <span className="text-slate-400 ml-2 text-sm">{suggestion.url}</span>
+                    </div>
                   </label>
                 ))}
               </div>
-              <div className="flex space-x-3">
+              <div className="flex space-x-4">
                 <button
                   onClick={handleSavePages}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                  className="btn-electric"
                 >
                   Start Tracking
                 </button>
@@ -521,7 +540,7 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
                     setCurrentCompetitorId(null);
                     setSelectedPages([]);
                   }}
-                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+                  className="btn-secondary"
                 >
                   Cancel
                 </button>
@@ -533,50 +552,65 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {competitors.map((competitor) => (
-          <div key={competitor.id} className="bg-white p-6 rounded-lg shadow">
+          <div key={competitor.id} className="competitor-card">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-lg font-medium text-gray-900">{competitor.company_name}</h3>
-                <p className="text-sm text-gray-600">{competitor.domain}</p>
+                <h3 className="text-lg font-semibold text-white">{competitor.company_name}</h3>
+                <p className="text-blue-400 text-sm">{competitor.domain}</p>
               </div>
               <button
                 onClick={() => handleDeleteCompetitor(competitor.id)}
-                className="text-red-600 hover:text-red-800"
+                className="text-red-400 hover:text-red-300 transition-colors p-1"
               >
                 ✕
               </button>
             </div>
             
-            <div className="space-y-2 mb-4">
-              <p className="text-sm text-gray-600">
-                <span className="font-medium">{competitor.tracked_pages?.length || 0}</span> pages tracked
+            <div className="space-y-3 mb-6">
+              <p className="text-slate-300 text-sm">
+                <span className="font-medium text-blue-400">{competitor.tracked_pages?.length || 0}</span> pages tracked
               </p>
-              {competitor.tracked_pages?.map((page, index) => (
-                <div key={index} className="text-xs text-gray-500">
-                  {page.page_type} - {page.url.split('/').pop() || 'homepage'}
+              {competitor.tracked_pages?.slice(0, 3).map((page, index) => (
+                <div key={index} className="text-xs text-slate-400 bg-slate-700/30 px-2 py-1 rounded">
+                  <span className="text-blue-400 capitalize">{page.page_type}</span> • {new URL(page.url).pathname}
                 </div>
               ))}
+              {competitor.tracked_pages?.length > 3 && (
+                <div className="text-xs text-slate-500">
+                  +{competitor.tracked_pages.length - 3} more pages
+                </div>
+              )}
             </div>
             
             <button
               onClick={() => handleScan(competitor.id)}
               disabled={scanning[competitor.id]}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50"
+              className="btn-electric w-full"
             >
-              {scanning[competitor.id] ? 'Scanning...' : 'Manual Scan'}
+              {scanning[competitor.id] ? (
+                <div className="flex items-center justify-center">
+                  <div className="loading-spinner mr-2" style={{width: '16px', height: '16px'}}></div>
+                  Scanning...
+                </div>
+              ) : (
+                'Manual Scan'
+              )}
             </button>
           </div>
         ))}
       </div>
 
       {competitors.length === 0 && (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🎯</div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">No competitors yet</h3>
-          <p className="text-gray-600 mb-4">Add your first competitor to start monitoring their changes</p>
+        <div className="text-center py-16">
+          <div className="text-6xl mb-6">🎯</div>
+          <h3 className="text-2xl font-semibold text-white mb-4">No competitors yet</h3>
+          <p className="text-slate-400 mb-8 max-w-md mx-auto">
+            Start monitoring your competition by adding your first competitor. 
+            We'll automatically discover their key pages and track changes.
+          </p>
           <button
             onClick={() => setShowAddForm(true)}
-            className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"
+            className="btn-electric pulse-glow"
           >
             Add Your First Competitor
           </button>
@@ -593,56 +627,91 @@ const ChangesTab = ({ changes, competitors }) => {
     return competitor ? competitor.company_name : 'Unknown';
   };
 
-  const getSignificanceColor = (score) => {
-    if (score >= 4) return 'text-red-600 bg-red-100';
-    if (score >= 3) return 'text-yellow-600 bg-yellow-100';
-    return 'text-green-600 bg-green-100';
+  const getSignificanceClass = (score) => {
+    if (score >= 4) return 'significance-high';
+    if (score >= 3) return 'significance-medium';
+    return 'significance-low';
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Changes</h2>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-white">Recent Changes</h2>
+        <div className="text-sm text-slate-400">
+          AI-powered competitive intelligence
+        </div>
+      </div>
       
       {changes.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🔄</div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">No changes detected yet</h3>
-          <p className="text-gray-600">Run scans on your competitors to see changes appear here</p>
+        <div className="text-center py-16">
+          <div className="text-6xl mb-6">🔄</div>
+          <h3 className="text-2xl font-semibold text-white mb-4">No changes detected yet</h3>
+          <p className="text-slate-400 max-w-md mx-auto">
+            Run scans on your competitors to see AI-powered insights about their strategic changes appear here.
+          </p>
         </div>
       ) : (
         <div className="space-y-6">
           {changes.map((change) => (
-            <div key={change.id} className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between items-start mb-4">
+            <div key={change.id} className="modern-card p-6 slide-up">
+              <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h3 className="text-lg font-medium text-gray-900">
+                  <h3 className="text-xl font-semibold text-white mb-1">
                     {getCompetitorName(change.competitor_id)}
                   </h3>
-                  <p className="text-sm text-gray-600">
-                    {new Date(change.created_at).toLocaleString()}
+                  <p className="text-slate-400 text-sm">
+                    {formatDate(change.created_at)}
                   </p>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getSignificanceColor(change.significance_score)}`}>
+                <span className={`significance-badge ${getSignificanceClass(change.significance_score)}`}>
                   Priority {change.significance_score}/5
                 </span>
               </div>
               
-              <div className="space-y-3">
+              <div className="space-y-6">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-1">What Changed:</h4>
-                  <p className="text-gray-700">{change.change_summary}</p>
+                  <h4 className="font-semibold text-blue-400 mb-2 flex items-center">
+                    <span className="mr-2">📝</span>
+                    What Changed
+                  </h4>
+                  <p className="text-slate-300 bg-slate-700/30 p-4 rounded-lg">
+                    {change.change_summary}
+                  </p>
                 </div>
                 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-1">Strategic Implications:</h4>
-                  <p className="text-gray-700">{change.strategic_implications}</p>
+                  <h4 className="font-semibold text-blue-400 mb-2 flex items-center">
+                    <span className="mr-2">🧠</span>
+                    Strategic Implications
+                  </h4>
+                  <p className="text-slate-300 bg-slate-700/30 p-4 rounded-lg">
+                    {change.strategic_implications}
+                  </p>
                 </div>
                 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-1">Suggested Actions:</h4>
-                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                  <h4 className="font-semibold text-blue-400 mb-2 flex items-center">
+                    <span className="mr-2">⚡</span>
+                    Suggested Actions
+                  </h4>
+                  <ul className="space-y-2">
                     {change.suggested_actions.map((action, index) => (
-                      <li key={index}>{action}</li>
+                      <li key={index} className="flex items-start text-slate-300">
+                        <span className="text-blue-400 mr-2 mt-1">•</span>
+                        <span className="bg-slate-700/30 px-3 py-2 rounded-lg flex-1">
+                          {action}
+                        </span>
+                      </li>
                     ))}
                   </ul>
                 </div>
