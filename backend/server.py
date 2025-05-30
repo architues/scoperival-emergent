@@ -473,6 +473,14 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
 # Include the router in the main app
 app.include_router(api_router)
 
+@app.get("/")
+async def root():
+    return {"message": "Scoperival API is running", "status": "healthy"}
+
+@app.get("/api/")
+async def api_root():
+    return {"message": "Scoperival API v1.0", "status": "healthy"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
