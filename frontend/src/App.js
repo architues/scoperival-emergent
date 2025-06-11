@@ -1159,35 +1159,277 @@ const AnalyticsTab = ({ stats, competitors, changes }) => {
   );
 };
 
-// New Settings Tab
+// Enhanced Settings Tab with proper UI
 const SettingsTab = ({ user }) => {
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [weeklyReports, setWeeklyReports] = useState(true);
+  const [scanFrequency, setScanFrequency] = useState('24h');
+  const [isEditing, setIsEditing] = useState(false);
+
   return (
-    <div className="settings-page">
-      <div className="settings-card">
-        <h3>Account Settings</h3>
-        <div className="setting-item">
-          <label>Company Name</label>
-          <input type="text" value={user.company_name} className="modern-input" readOnly />
+    <div className="space-y-8">
+      {/* Account Settings */}
+      <div className="modern-card p-6">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-700/50">
+          <h3 className="text-xl font-semibold text-white flex items-center">
+            <span className="mr-3 text-2xl">👤</span>
+            Account Settings
+          </h3>
+          <button 
+            onClick={() => setIsEditing(!isEditing)}
+            className="btn-secondary text-sm px-4 py-2"
+          >
+            {isEditing ? 'Cancel' : 'Edit Profile'}
+          </button>
         </div>
-        <div className="setting-item">
-          <label>Email</label>
-          <input type="email" value={user.email} className="modern-input" readOnly />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Company Name</label>
+            <input 
+              type="text" 
+              value={user?.company_name || 'Scoperival'} 
+              className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
+              disabled={!isEditing}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Email Address</label>
+            <input 
+              type="email" 
+              value={user?.email || 'ahaan.pandit@gmail.com'} 
+              className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
+              disabled={!isEditing}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Time Zone</label>
+            <select 
+              className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
+              disabled={!isEditing}
+            >
+              <option>UTC-05:00 (Eastern Time)</option>
+              <option>UTC-08:00 (Pacific Time)</option>
+              <option>UTC+00:00 (GMT)</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">Language</label>
+            <select 
+              className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
+              disabled={!isEditing}
+            >
+              <option>English (US)</option>
+              <option>English (UK)</option>
+              <option>Spanish</option>
+              <option>French</option>
+            </select>
+          </div>
+        </div>
+        
+        {isEditing && (
+          <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-slate-700/50">
+            <button 
+              onClick={() => setIsEditing(false)}
+              className="btn-secondary px-4 py-2"
+            >
+              Cancel
+            </button>
+            <button className="btn-electric px-4 py-2">
+              Save Changes
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Notification Settings */}
+      <div className="modern-card p-6">
+        <div className="flex items-center mb-6 pb-4 border-b border-slate-700/50">
+          <h3 className="text-xl font-semibold text-white flex items-center">
+            <span className="mr-3 text-2xl">🔔</span>
+            Notification Settings
+          </h3>
+        </div>
+        
+        <div className="space-y-6">
+          <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg">
+            <div>
+              <h4 className="text-white font-medium mb-1">Email Notifications</h4>
+              <p className="text-slate-400 text-sm">Receive alerts for high-priority competitor changes</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={emailNotifications}
+                onChange={(e) => setEmailNotifications(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+            </label>
+          </div>
+          
+          <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg">
+            <div>
+              <h4 className="text-white font-medium mb-1">Weekly Summary Reports</h4>
+              <p className="text-slate-400 text-sm">Get weekly insights and trend analysis via email</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={weeklyReports}
+                onChange={(e) => setWeeklyReports(e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+            </label>
+          </div>
+
+          <div className="p-4 bg-slate-800/30 rounded-lg">
+            <h4 className="text-white font-medium mb-3">Notification Frequency</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {['Instant', 'Hourly', 'Daily'].map((freq) => (
+                <label key={freq} className="flex items-center p-3 border border-slate-600 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                  <input 
+                    type="radio" 
+                    name="frequency" 
+                    value={freq.toLowerCase()}
+                    className="text-blue-500 mr-3"
+                    defaultChecked={freq === 'Daily'}
+                  />
+                  <span className="text-slate-300">{freq}</span>
+                </label>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div className="settings-card">
-        <h3>Notification Settings</h3>
-        <div className="setting-item">
-          <label className="checkbox-label">
-            <input type="checkbox" defaultChecked />
-            Email notifications for high-priority changes
-          </label>
+
+      {/* Monitoring Settings */}
+      <div className="modern-card p-6">
+        <div className="flex items-center mb-6 pb-4 border-b border-slate-700/50">
+          <h3 className="text-xl font-semibold text-white flex items-center">
+            <span className="mr-3 text-2xl">⚙️</span>
+            Monitoring Settings
+          </h3>
         </div>
-        <div className="setting-item">
-          <label className="checkbox-label">
-            <input type="checkbox" defaultChecked />
-            Weekly summary reports
-          </label>
+        
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-3">Scan Frequency</label>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              {[
+                { value: '6h', label: 'Every 6 hours', desc: 'High frequency' },
+                { value: '12h', label: 'Every 12 hours', desc: 'Balanced' },
+                { value: '24h', label: 'Daily', desc: 'Recommended' },
+                { value: '48h', label: 'Every 2 days', desc: 'Low frequency' }
+              ].map((option) => (
+                <label 
+                  key={option.value} 
+                  className={`flex flex-col p-4 border rounded-lg cursor-pointer transition-all ${
+                    scanFrequency === option.value 
+                      ? 'border-blue-500 bg-blue-500/10' 
+                      : 'border-slate-600 hover:border-slate-500'
+                  }`}
+                >
+                  <input 
+                    type="radio" 
+                    name="scanFrequency" 
+                    value={option.value}
+                    checked={scanFrequency === option.value}
+                    onChange={(e) => setScanFrequency(e.target.value)}
+                    className="sr-only"
+                  />
+                  <span className="text-white font-medium text-sm">{option.label}</span>
+                  <span className="text-slate-400 text-xs mt-1">{option.desc}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Detection Sensitivity</label>
+              <select className="modern-input w-full">
+                <option>High - Detect all changes</option>
+                <option>Medium - Major changes only</option>
+                <option>Low - Critical changes only</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Auto-scan New Pages</label>
+              <select className="modern-input w-full">
+                <option>Enabled</option>
+                <option>Disabled</option>
+                <option>Ask me first</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Security Settings */}
+      <div className="modern-card p-6">
+        <div className="flex items-center mb-6 pb-4 border-b border-slate-700/50">
+          <h3 className="text-xl font-semibold text-white flex items-center">
+            <span className="mr-3 text-2xl">🔒</span>
+            Security & Privacy
+          </h3>
+        </div>
+        
+        <div className="space-y-4">
+          <button className="w-full md:w-auto btn-secondary px-6 py-3 text-left">
+            Change Password
+          </button>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-slate-800/30 rounded-lg">
+              <h4 className="text-white font-medium mb-2">Two-Factor Authentication</h4>
+              <p className="text-slate-400 text-sm mb-3">Add an extra layer of security to your account</p>
+              <button className="btn-electric text-sm px-4 py-2">
+                Enable 2FA
+              </button>
+            </div>
+            
+            <div className="p-4 bg-slate-800/30 rounded-lg">
+              <h4 className="text-white font-medium mb-2">API Access</h4>
+              <p className="text-slate-400 text-sm mb-3">Manage API keys and integrations</p>
+              <button className="btn-secondary text-sm px-4 py-2">
+                Manage Keys
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="modern-card p-6 border-red-500/30">
+        <div className="flex items-center mb-6 pb-4 border-b border-red-500/30">
+          <h3 className="text-xl font-semibold text-red-400 flex items-center">
+            <span className="mr-3 text-2xl">⚠️</span>
+            Danger Zone
+          </h3>
+        </div>
+        
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-red-900/10 border border-red-500/30 rounded-lg">
+            <div>
+              <h4 className="text-red-400 font-medium mb-1">Export Data</h4>
+              <p className="text-slate-400 text-sm">Download all your competitor data and analysis</p>
+            </div>
+            <button className="bg-red-600/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg hover:bg-red-600/30 transition-colors text-sm">
+              Export
+            </button>
+          </div>
+          
+          <div className="flex items-center justify-between p-4 bg-red-900/10 border border-red-500/30 rounded-lg">
+            <div>
+              <h4 className="text-red-400 font-medium mb-1">Delete Account</h4>
+              <p className="text-slate-400 text-sm">Permanently delete your account and all data</p>
+            </div>
+            <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
+              Delete Account
+            </button>
+          </div>
         </div>
       </div>
     </div>
