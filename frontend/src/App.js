@@ -834,7 +834,7 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   );
 };
 
-// Changes Tab - keeping the existing implementation
+// Changes Tab - Fixed UI for better readability
 const ChangesTab = ({ changes, competitors }) => {
   const getCompetitorName = (competitorId) => {
     const competitor = competitors.find(c => c.id === competitorId);
@@ -858,46 +858,85 @@ const ChangesTab = ({ changes, competitors }) => {
   };
 
   return (
-    <div className="changes-page">
+    <div className="space-y-6">
       {changes.length === 0 ? (
-        <div className="empty-state-large">
-          <div className="empty-icon">🔄</div>
-          <h3>No changes detected yet</h3>
-          <p>Run scans on your competitors to see AI-powered insights here</p>
+        <div className="text-center py-16">
+          <div className="text-6xl mb-6">🔄</div>
+          <h3 className="text-2xl font-semibold text-white mb-4">No changes detected yet</h3>
+          <p className="text-slate-400 max-w-md mx-auto">
+            Run scans on your competitors to see AI-powered insights about their strategic changes appear here.
+          </p>
         </div>
       ) : (
-        <div className="changes-list">
+        <div className="space-y-6">
           {changes.map((change) => (
-            <div key={change.id} className="change-card">
-              <div className="change-header">
-                <div className="change-info">
-                  <h3>{getCompetitorName(change.competitor_id)}</h3>
-                  <p>{formatDate(change.created_at)}</p>
+            <div key={change.id} className="modern-card p-6">
+              {/* Header */}
+              <div className="flex justify-between items-start mb-6 pb-4 border-b border-slate-700/50">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {getCompetitorName(change.competitor_id)}
+                  </h3>
+                  <p className="text-slate-400 text-sm">
+                    {formatDate(change.created_at)}
+                  </p>
                 </div>
                 <span className={`significance-badge ${getSignificanceClass(change.significance_score)}`}>
                   Priority {change.significance_score}/5
                 </span>
               </div>
               
-              <div className="change-content">
-                <div className="change-section">
-                  <h4>📝 What Changed</h4>
-                  <p>{change.change_summary}</p>
+              {/* Content Sections */}
+              <div className="space-y-6">
+                {/* What Changed */}
+                <div className="bg-slate-800/30 rounded-lg p-4">
+                  <h4 className="flex items-center text-blue-400 font-semibold mb-3 text-sm uppercase tracking-wide">
+                    <span className="mr-2">📝</span>
+                    What Changed
+                  </h4>
+                  <p className="text-slate-200 leading-relaxed">
+                    {change.change_summary}
+                  </p>
                 </div>
                 
-                <div className="change-section">
-                  <h4>🧠 Strategic Implications</h4>
-                  <p>{change.strategic_implications}</p>
+                {/* Strategic Implications */}
+                <div className="bg-purple-900/20 rounded-lg p-4">
+                  <h4 className="flex items-center text-purple-400 font-semibold mb-3 text-sm uppercase tracking-wide">
+                    <span className="mr-2">🧠</span>
+                    Strategic Implications
+                  </h4>
+                  <p className="text-slate-200 leading-relaxed">
+                    {change.strategic_implications}
+                  </p>
                 </div>
                 
-                <div className="change-section">
-                  <h4>⚡ Suggested Actions</h4>
-                  <ul>
+                {/* Suggested Actions */}
+                <div className="bg-green-900/20 rounded-lg p-4">
+                  <h4 className="flex items-center text-green-400 font-semibold mb-3 text-sm uppercase tracking-wide">
+                    <span className="mr-2">⚡</span>
+                    Suggested Actions
+                  </h4>
+                  <div className="space-y-2">
                     {change.suggested_actions.map((action, index) => (
-                      <li key={index}>{action}</li>
+                      <div key={index} className="flex items-start">
+                        <span className="text-green-400 mr-3 mt-1 text-sm">•</span>
+                        <span className="text-slate-200 leading-relaxed">
+                          {action}
+                        </span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-slate-700/50">
+                <button className="btn-secondary text-sm px-4 py-2">
+                  Mark as Read
+                </button>
+                <button className="btn-electric text-sm px-4 py-2">
+                  Share Analysis
+                </button>
               </div>
             </div>
           ))}
