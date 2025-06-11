@@ -543,6 +543,32 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   const [selectedPages, setSelectedPages] = useState([]);
   const [currentCompetitorId, setCurrentCompetitorId] = useState(null);
   const [scanning, setScanning] = useState({});
+  const [localCompetitors, setLocalCompetitors] = useState(competitors);
+  const [loading, setLoading] = useState(false);
+
+  // Sync with props and fetch data if needed
+  useEffect(() => {
+    setLocalCompetitors(competitors);
+    // If no competitors in props but we expect some, trigger refresh
+    if (competitors.length === 0) {
+      fetchCompetitors();
+    }
+  }, [competitors]);
+
+  const fetchCompetitors = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API}/competitors`);
+      setLocalCompetitors(response.data);
+      if (onRefresh) {
+        onRefresh();
+      }
+    } catch (error) {
+      console.error('Failed to fetch competitors:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAddCompetitor = async (e) => {
     e.preventDefault();
@@ -573,7 +599,8 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
       setSuggestions([]);
       setCurrentCompetitorId(null);
       setSelectedPages([]);
-      onRefresh();
+      // Refresh competitors data
+      await fetchCompetitors();
     } catch (error) {
       console.error('Failed to save pages:', error);
       alert('Failed to save pages. Please try again.');
@@ -585,7 +612,7 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
     try {
       const response = await axios.post(`${API}/competitors/${competitorId}/scan`);
       alert(response.data.message);
-      onRefresh();
+      await fetchCompetitors();
     } catch (error) {
       console.error('Scan failed:', error);
       alert('Scan failed. Please try again.');
@@ -598,13 +625,24 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
     if (window.confirm('Are you sure you want to delete this competitor?')) {
       try {
         await axios.delete(`${API}/competitors/${competitorId}`);
-        onRefresh();
+        await fetchCompetitors();
       } catch (error) {
         console.error('Failed to delete competitor:', error);
         alert('Failed to delete competitor. Please try again.');
       }
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="loading-spinner mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading competitors...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -704,7 +742,7 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {competitors.map((competitor) => (
+        {localCompetitors.map((competitor) => (
           <div key={competitor.id} className="modern-card p-6">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center space-x-3">
@@ -776,7 +814,7 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
         ))}
       </div>
 
-      {competitors.length === 0 && (
+      {localCompetitors.length === 0 && !loading && (
         <div className="text-center py-16">
           <div className="text-6xl mb-6">🎯</div>
           <h3 className="text-2xl font-semibold text-white mb-4">No competitors yet</h3>
