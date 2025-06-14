@@ -30,7 +30,7 @@ const AuthContext = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${API}/auth/login`, { email, password });
+      const response = await axios.post(`${API}/login`, { email, password });
       const { access_token } = response.data;
       setToken(access_token);
       localStorage.setItem('token', access_token);
@@ -44,7 +44,7 @@ const AuthContext = ({ children }) => {
 
   const register = async (email, password, company_name) => {
     try {
-      const response = await axios.post(`${API}/auth/register`, {
+      const response = await axios.post(`${API}/register`, {
         email,
         password,
         company_name
