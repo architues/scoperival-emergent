@@ -9,8 +9,6 @@ import uuid
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-app = FastAPI()
-
 # Environment variables
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb+srv://ahaan:l7SZvjEovnByXkX9@scope-rival.1eakanl.mongodb.net/?retryWrites=true&w=majority&appName=Scope-rival')
 DB_NAME = os.environ.get('DB_NAME', 'scoperival_db')
@@ -84,6 +82,9 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise credentials_exception
     return User(**user)
 
+# Create FastAPI app
+app = FastAPI()
+
 @app.post("/register", response_model=Token)
 async def register(user_data: UserCreate):
     # Check if user already exists
@@ -130,5 +131,6 @@ async def login(user_data: UserLogin):
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
-# Export the app for Vercel
-handler = app
+# Vercel handler
+def handler(request):
+    return app(request)
