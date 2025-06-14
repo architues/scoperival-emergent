@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 
 class ScoperivalAPITester:
-    def __init__(self, base_url="https://ba3bc982-a283-4930-9744-0221fdff4458.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://a4d646d9-5c86-4354-9aed-4fa955acd5ef.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0
