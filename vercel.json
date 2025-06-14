@@ -1,36 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
   "env": {
     "MONGO_URL": "@mongo_url",
-    "DB_NAME": "@db_name",
+    "DB_NAME": "@db_name", 
     "OPENAI_API_KEY": "@openai_api_key"
-  },
-  "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.9"
-    }
   }
 }
