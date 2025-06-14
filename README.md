@@ -1,87 +1,178 @@
-# 🎯 Scoperival - AI-Powered Competitor Intelligence Platform
+# Scoperival - AI-Powered Competitor Intelligence
 
-## 🚀 Ready for Vercel Deployment!
+A comprehensive competitive intelligence platform that monitors competitor websites and provides AI-powered insights.
 
-Scoperival is now optimized for Vercel deployment with auto-detection (no vercel.json needed).
+## 🚀 Quick Deploy
 
-### 📋 Quick Deploy Steps
+### Frontend (Vercel)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/scoperival)
 
-1. **Push to GitHub**
-   ```bash
-   git add .
-   git commit -m "Ready for Vercel deployment"
-   git push origin main
+### Backend (Render)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/your-username/scoperival)
+
+## 📋 Deployment Guide
+
+### 1. Frontend Deployment (Vercel)
+
+1. **Fork/Clone Repository**
+2. **Import to Vercel:**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "New Project"
+   - Import your repository
+   - Vercel will automatically detect the configuration
+
+3. **Environment Variables:**
+   Set this in Vercel dashboard:
+   ```
+   REACT_APP_BACKEND_URL=https://your-render-backend-url.onrender.com
    ```
 
-2. **Deploy on Vercel**
-   - Go to [vercel.com](https://vercel.com) → New Project
-   - Import your GitHub repository
-   - Vercel will auto-detect React + Python API setup
+4. **Deploy:**
+   - Vercel will automatically build and deploy
+   - The `vercel.json` configuration ensures only the frontend is deployed
 
-3. **Set Environment Variables**
-   In your Vercel dashboard, add:
+### 2. Backend Deployment (Render)
+
+1. **Create Web Service on Render:**
+   - Go to [render.com](https://render.com)
+   - Create new "Web Service"
+   - Connect your repository
+
+2. **Build Settings:**
    ```
-   MONGO_URL=mongodb+srv://ahaan:l7SZvjEovnByXkX9@scope-rival.1eakanl.mongodb.net/?retryWrites=true&w=majority&appName=Scope-rival
+   Build Command: pip install -r requirements.txt
+   Start Command: uvicorn backend.server:app --host 0.0.0.0 --port $PORT
+   ```
+
+3. **Environment Variables:**
+   ```
+   MONGO_URL=your_mongodb_connection_string
    DB_NAME=scoperival_db
-   OPENAI_API_KEY=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
+   OPENAI_API_KEY=your_openai_api_key
    ```
 
-4. **Deploy!** ✨
+4. **Deploy:**
+   - Render will build and deploy your backend
+   - Copy the backend URL for frontend configuration
 
-### 🏗️ Project Structure
+### 3. Update Frontend
+
+Once backend is deployed:
+1. Go to your Vercel dashboard
+2. Update `REACT_APP_BACKEND_URL` with your Render backend URL
+3. Redeploy frontend
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    HTTPS    ┌─────────────────┐    MongoDB    ┌─────────────────┐
+│                 │   Request   │                 │   Queries     │                 │
+│  Frontend       │────────────►│  Backend        │──────────────►│  MongoDB Atlas  │
+│  (Vercel)       │             │  (Render)       │               │  (Database)     │
+│  React App      │◄────────────│  FastAPI        │◄──────────────│                 │
+│                 │   Response  │                 │   Results     │                 │
+└─────────────────┘             └─────────────────┘               └─────────────────┘
+```
+
+## 🛠️ Local Development
+
+### Prerequisites
+- Node.js 18+
+- Python 3.9+
+- MongoDB Atlas account
+- OpenAI API key
+
+### Backend Setup
+```bash
+cd backend
+pip install -r requirements.txt
+
+# Create .env file
+cp .env.example .env
+# Edit .env with your credentials
+
+# Run backend
+uvicorn server:app --reload --port 8001
+```
+
+### Frontend Setup
+```bash
+cd frontend
+yarn install
+
+# Create .env file for local development
+echo "REACT_APP_BACKEND_URL=http://localhost:8001" > .env
+
+# Run frontend
+yarn start
+```
+
+## 📁 Project Structure
 
 ```
 scoperival/
-├── api/                 # Python serverless functions (auto-detected)
-│   ├── register.py     # User registration endpoint
-│   └── login.py        # User login endpoint
-├── src/                # React frontend (auto-detected)
-│   ├── App.js         # Main application
-│   └── App.css        # Styling
-├── public/            # Static assets
-└── package.json       # Build configuration
+├── frontend/              # React application (Vercel)
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── .env
+├── backend/               # FastAPI application (Render)
+│   ├── server.py
+│   ├── requirements.txt
+│   └── .env
+├── vercel.json           # Vercel configuration
+├── render.yaml           # Render configuration
+├── Procfile              # Process configuration
+└── README.md
 ```
 
-### ✨ What's Working
+## 🔧 Environment Variables
 
-- 🔐 **Authentication** - Register and login functionality
-- 🎨 **Modern UI** - Beautiful dark theme with gradients
-- 📱 **Responsive Design** - Works on all devices
-- ☁️ **Serverless API** - Python functions on Vercel
-- 💾 **MongoDB Atlas** - Cloud database integration
-- 🚀 **Auto-Deploy** - Git push triggers deployment
+### Frontend (.env)
+```bash
+REACT_APP_BACKEND_URL=https://your-backend-url.onrender.com
+```
 
-### 🔧 Architecture
+### Backend (.env)
+```bash
+MONGO_URL=mongodb+srv://user:pass@cluster.mongodb.net/
+DB_NAME=scoperival_db
+OPENAI_API_KEY=sk-your-openai-key
+```
 
-- **Frontend**: React 18 with Tailwind CSS
-- **Backend**: Python serverless functions
-- **Database**: MongoDB Atlas (works great with Vercel)
-- **Auth**: JWT tokens with bcrypt password hashing
-- **Hosting**: Vercel (auto-detects everything)
+## 🚀 Features
 
-### 📱 Current Features
+- **Competitor Monitoring**: Track competitor website changes
+- **AI Analysis**: OpenAI-powered change analysis and strategic insights
+- **Real-time Alerts**: Get notified of important competitor updates
+- **Dashboard**: Beautiful, responsive interface for managing intelligence
+- **Multi-page Tracking**: Monitor pricing, features, blogs, and changelog pages
 
-✅ User registration and login
-✅ Beautiful authentication UI
-✅ Dashboard welcome screen
-✅ Secure token-based authentication
-✅ MongoDB Atlas integration
-✅ Responsive design
+## 🔐 Security
 
-### 🔜 Coming Soon
+- JWT-based authentication
+- Password hashing with bcrypt
+- CORS protection
+- Environment variable configuration
 
-The current deployment includes the core authentication system. The full competitor intelligence features (AI analysis, web scraping, dashboard) will be added in the next iteration.
+## 📝 API Documentation
 
-### 🌟 Benefits
+Once deployed, visit:
+- Frontend: `https://your-app.vercel.app`
+- Backend API Docs: `https://your-backend.onrender.com/docs`
 
-- **Zero Config**: Vercel auto-detects React + Python
-- **Serverless**: Scales automatically, pay per use
-- **Global CDN**: Fast worldwide access
-- **SSL**: HTTPS by default
-- **MongoDB Atlas**: Reliable cloud database
+## 🆘 Support
 
----
+If you encounter issues:
+1. Check the deployment logs in Vercel/Render dashboards
+2. Verify environment variables are set correctly
+3. Ensure MongoDB Atlas allows connections from your deployment IPs
+4. Check OpenAI API key permissions and credits
 
-**Deploy URL**: Your app will be at `https://your-repo-name.vercel.app`
+## 🎯 Next Steps
 
-Ready to go live! 🚀
+1. Deploy backend to Render
+2. Deploy frontend to Vercel
+3. Configure environment variables
+4. Set up MongoDB Atlas
+5. Test the complete application flow
