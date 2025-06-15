@@ -43,6 +43,20 @@ security = HTTPBearer()
 # Create the main app without a prefix
 app = FastAPI(title="Scoperival API", description="Competitor Analysis Tool")
 
+# Add CORS middleware FIRST
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=[
+        "https://scoperival-emergent.vercel.app",
+        "https://*.vercel.app", 
+        "http://localhost:3000",
+        "https://localhost:3000"
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
