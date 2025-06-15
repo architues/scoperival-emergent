@@ -168,6 +168,8 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => 
 
 // Top Header Component
 const TopHeader = ({ user, logout, activeTab }) => {
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  
   const getPageTitle = (tab) => {
     const titles = {
       overview: 'Dashboard Overview',
@@ -189,11 +191,11 @@ const TopHeader = ({ user, logout, activeTab }) => {
       <div className="header-right">
         <div className="header-stats">
           <div className="stat-item">
-            <span className="stat-label">Status</span>
+            <span className="stat-label">STATUS</span>
             <span className="stat-value active">Active</span>
           </div>
           <div className="stat-item">
-            <span className="stat-label">Last Updated</span>
+            <span className="stat-label">LAST UPDATED</span>
             <span className="stat-value">{new Date().toLocaleDateString()}</span>
           </div>
         </div>
@@ -204,15 +206,54 @@ const TopHeader = ({ user, logout, activeTab }) => {
             <span className="notification-badge">3</span>
           </button>
           
-          <div className="user-menu">
-            <div className="user-avatar-header">
-              {user?.company_name?.charAt(0)?.toUpperCase() || 'U'}
-            </div>
-            <div className="user-dropdown">
-              <button onClick={logout} className="logout-btn">
-                Sign Out
-              </button>
-            </div>
+          <div className="user-menu-container">
+            <button 
+              className="user-menu-trigger"
+              onClick={() => setShowUserMenu(!showUserMenu)}
+            >
+              <div className="user-avatar-header">
+                {user?.company_name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+              <span className="user-name-header">
+                {user?.company_name || 'User'}
+              </span>
+              <svg className="chevron-down" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M4.427 6.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 6H4.604a.25.25 0 00-.177.427z"/>
+              </svg>
+            </button>
+            
+            {showUserMenu && (
+              <div className="user-dropdown-menu">
+                <div className="user-info-header">
+                  <div className="user-name">{user?.company_name || 'User'}</div>
+                  <div className="user-email">{user?.email || 'user@example.com'}</div>
+                </div>
+                <div className="dropdown-divider"></div>
+                <button className="dropdown-item">
+                  <span>👤</span>
+                  Profile Settings
+                </button>
+                <button className="dropdown-item">
+                  <span>⚙️</span>
+                  Preferences
+                </button>
+                <button className="dropdown-item">
+                  <span>💳</span>
+                  Billing
+                </button>
+                <div className="dropdown-divider"></div>
+                <button 
+                  className="dropdown-item logout-item"
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    logout();
+                  }}
+                >
+                  <span>🚪</span>
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
