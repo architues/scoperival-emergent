@@ -272,7 +272,12 @@ async def analyze_change_with_openai(previous_content, new_content, page_type, c
 
 # API Routes
 @api_router.post("/auth/register", response_model=Token)
-async def register(user_data: UserCreate):
+async def register(user_data: UserCreate, response: Response):
+    # Add explicit CORS headers
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    
     # Check if user already exists
     existing_user = await db.users.find_one({"email": user_data.email})
     if existing_user:
@@ -297,7 +302,12 @@ async def register(user_data: UserCreate):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @api_router.post("/auth/login", response_model=Token)
-async def login(user_data: UserLogin):
+async def login(user_data: UserLogin, response: Response):
+    # Add explicit CORS headers
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    
     user = await db.users.find_one({"email": user_data.email})
     if not user or not verify_password(user_data.password, user["hashed_password"]):
         raise HTTPException(
