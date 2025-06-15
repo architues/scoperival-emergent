@@ -532,9 +532,13 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup_db_client():
-    # Skip MongoDB connection for now - just log
-    logger.info("Backend starting up - MongoDB connection disabled for testing")
-    pass
+    try:
+        # Test the connection
+        await client.admin.command('ping')
+        logger.info("Successfully connected to MongoDB!")
+    except Exception as e:
+        logger.error(f"Failed to connect to MongoDB: {str(e)}")
+        # Don't fail startup, but log the error
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
