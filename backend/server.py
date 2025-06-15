@@ -294,10 +294,15 @@ async def analyze_change_with_openai(previous_content, new_content, page_type, c
         }
 
 # API Routes
+@api_router.get("/test-cors")
+async def test_cors_get():
+    """Test endpoint that doesn't require database - GET version"""
+    return {"message": "CORS is working!", "backend": "connected", "method": "GET", "timestamp": datetime.utcnow().isoformat()}
+
 @api_router.post("/test-cors")
 async def test_cors():
-    """Test endpoint that doesn't require database"""
-    return {"message": "CORS is working!", "backend": "connected", "timestamp": datetime.utcnow().isoformat()}
+    """Test endpoint that doesn't require database - POST version"""
+    return {"message": "CORS is working!", "backend": "connected", "method": "POST", "timestamp": datetime.utcnow().isoformat()}
 
 @api_router.post("/auth/register", response_model=Token)
 async def register(user_data: UserCreate):
