@@ -56,6 +56,27 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
+@app.middleware("http")
+async def cors_handler(request, call_next):
+    # Handle preflight OPTIONS requests
+    if request.method == "OPTIONS":
+        response = JSONResponse(content={"message": "OK"})
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Max-Age"] = "86400"
+        return response
+    
+    # Process the request
+    response = await call_next(request)
+    
+    # Add CORS headers to all responses
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return response
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
