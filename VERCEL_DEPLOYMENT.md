@@ -13,7 +13,7 @@ This is the React frontend application for Scoperival, designed to be deployed o
 
 2. **Set Environment Variables in Vercel:**
    ```
-   REACT_APP_BACKEND_URL=https://your-render-backend-url.onrender.com
+   REACT_APP_BACKEND_URL=https://scoperival-emergent.onrender.com
    ```
 
 3. **Build Settings:**
