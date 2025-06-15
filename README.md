@@ -130,7 +130,7 @@ scoperival/
 
 ### Frontend (.env)
 ```bash
-REACT_APP_BACKEND_URL=https://your-backend-url.onrender.com
+REACT_APP_BACKEND_URL=https://scoperival-emergent.onrender.com
 ```
 
 ### Backend (.env)
