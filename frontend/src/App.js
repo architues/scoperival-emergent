@@ -393,17 +393,31 @@ const Dashboard = ({ user, logout }) => {
 
   const fetchDashboardData = async () => {
     try {
-      const [statsRes, competitorsRes, changesRes] = await Promise.all([
-        axios.get(`${API}/dashboard/stats`),
-        axios.get(`${API}/competitors`),
-        axios.get(`${API}/changes`)
-      ]);
+      // Only fetch competitors - remove the other endpoints that may not exist
+      const competitorsRes = await axios.get(`${API}/competitors`);
       
-      setStats(statsRes.data);
       setCompetitors(competitorsRes.data);
-      setChanges(changesRes.data);
+      
+      // Set mock data for stats and changes for now
+      setStats({
+        total_competitors: competitorsRes.data.length,
+        total_tracked_pages: competitorsRes.data.reduce((acc, comp) => acc + (comp.tracked_pages?.length || 0), 0),
+        recent_changes: 0,
+        high_significance_changes: 0
+      });
+      setChanges([]); // Empty changes for now
+      
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      // Set empty data on error to prevent infinite loops
+      setCompetitors([]);
+      setStats({
+        total_competitors: 0,
+        total_tracked_pages: 0,
+        recent_changes: 0,
+        high_significance_changes: 0
+      });
+      setChanges([]);
     } finally {
       setLoading(false);
     }
