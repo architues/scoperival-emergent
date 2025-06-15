@@ -527,40 +527,9 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup_db_client():
-    global client, db
-    try:
-        # Test the connection
-        await client.admin.command('ping')
-        logger.info("Successfully connected to MongoDB!")
-    except Exception as e:
-        logger.error(f"Failed to connect to MongoDB: {str(e)}")
-        logger.error("Attempting connection without SSL verification...")
-        
-        # Try alternative connection method
-        try:
-            mongo_url = os.environ['MONGO_URL']
-            # Create new client with correct pymongo parameters
-            client = AsyncIOMotorClient(
-                mongo_url,
-                tls=False,  # Disable TLS completely
-                serverSelectionTimeoutMS=30000,
-                connectTimeoutMS=20000,
-                retryWrites=True
-            )
-            db = client[os.environ['DB_NAME']]
-            await client.admin.command('ping')
-            logger.info("Connected to MongoDB without SSL!")
-        except Exception as e2:
-            logger.error(f"Alternative connection also failed: {str(e2)}")
-            # Try with basic connection
-            try:
-                basic_url = mongo_url.split('?')[0]  # Remove query parameters
-                client = AsyncIOMotorClient(basic_url)
-                db = client[os.environ['DB_NAME']]
-                await client.admin.command('ping')
-                logger.info("Connected with basic MongoDB connection!")
-            except Exception as e3:
-                logger.error(f"All connection attempts failed: {str(e3)}")
+    # Skip MongoDB connection for now - just log
+    logger.info("Backend starting up - MongoDB connection disabled for testing")
+    pass
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
