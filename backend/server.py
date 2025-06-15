@@ -304,30 +304,83 @@ async def test_cors():
     """Test endpoint that doesn't require database - POST version"""
     return {"message": "CORS is working!", "backend": "connected", "method": "POST", "timestamp": datetime.utcnow().isoformat()}
 
+@api_router.options("/auth/register")
+async def register_options():
+    """Handle preflight OPTIONS request for register"""
+    return JSONResponse(
+        content={"message": "OK"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "86400",
+        }
+    )
+
+@api_router.options("/auth/login") 
+async def login_options():
+    """Handle preflight OPTIONS request for login"""
+    return JSONResponse(
+        content={"message": "OK"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS", 
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "86400",
+        }
+    )
+
 @api_router.post("/auth/register", response_model=Token)
 async def register(user_data: UserCreate):
-    # Check if user already exists
-    existing_user = await db.users.find_one({"email": user_data.email})
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    # Create new user
-    hashed_password = get_password_hash(user_data.password)
-    user = User(
-        email=user_data.email,
-        hashed_password=hashed_password,
-        company_name=user_data.company_name
-    )
-    
-    await db.users.insert_one(user.dict())
-    
-    # Create access token
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
-    
-    return {"access_token": access_token, "token_type": "bearer"}
+    try:
+        # Check if user already exists
+        existing_user = await db.users.find_one({"email": user_data.email})
+        if existing_user:
+            response = JSONResponse(
+                content={"detail": "Email already registered"},
+                status_code=400,
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS",
+                    "Access-Control-Allow-Headers": "*",
+                }
+            )
+            return response
+        
+        # Create new user
+        hashed_password = get_password_hash(user_data.password)
+        user = User(
+            email=user_data.email,
+            hashed_password=hashed_password,
+            company_name=user_data.company_name
+        )
+        
+        await db.users.insert_one(user.dict())
+        
+        # Create access token
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+        )
+        
+        return JSONResponse(
+            content={"access_token": access_token, "token_type": "bearer"},
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "*",
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            content={"detail": str(e)},
+            status_code=500,
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "*",
+            }
+        )
 
 @api_router.post("/auth/login", response_model=Token)
 async def login(user_data: UserLogin):
