@@ -38,7 +38,7 @@ Your FastAPI backend should be deployed separately on Render.
      ```
 
 3. **Update Frontend Environment:**
-   - Once your backend is deployed on Render, update the `REACT_APP_BACKEND_URL` environment variable in Vercel with your Render backend URL.
+   - Once your backend is deployed on Render, update the `REACT_APP_BACKEND_URL` environment variable in Vercel with your Render backend URL: `https://scoperival-emergent.onrender.com`
 
 ### 3. Architecture
 
