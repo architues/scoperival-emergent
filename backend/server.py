@@ -484,8 +484,13 @@ async def api_root():
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=[
+        "https://scoperival-emergent.vercel.app",
+        "https://*.vercel.app",
+        "http://localhost:3000",
+        "https://localhost:3000"
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
