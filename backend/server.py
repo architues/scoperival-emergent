@@ -495,18 +495,7 @@ async def root():
 async def api_root():
     return {"message": "Scoperival API v1.0", "status": "healthy"}
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=[
-        "https://scoperival-emergent.vercel.app",
-        "https://*.vercel.app",
-        "http://localhost:3000",
-        "https://localhost:3000"
-    ],
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-)
+
 
 # Configure logging
 logging.basicConfig(
