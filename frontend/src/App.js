@@ -421,7 +421,14 @@ const Dashboard = ({ user, logout }) => {
         
         <div className="content-area">
           <div className="fade-in">
-            {activeTab === 'overview' && <OverviewTab stats={stats} competitors={competitors} changes={changes} />}
+            {activeTab === 'overview' && (
+              <OverviewTab 
+                stats={stats} 
+                competitors={competitors} 
+                changes={changes} 
+                onAddCompetitor={() => setActiveTab('competitors')}
+              />
+            )}
             {activeTab === 'competitors' && <CompetitorsTab competitors={competitors} onRefresh={fetchDashboardData} />}
             {activeTab === 'changes' && <ChangesTab changes={changes} competitors={competitors} />}
             {activeTab === 'analytics' && <AnalyticsTab stats={stats} competitors={competitors} changes={changes} />}
