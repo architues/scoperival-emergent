@@ -504,7 +504,15 @@ async def api_root():
 
 @app.options("/{path:path}")
 async def options_handler(path: str):
-    return {"message": "OK"}
+    return JSONResponse(
+        content={"message": "OK"},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Max-Age": "86400",
+        }
+    )
 
 
 
