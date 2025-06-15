@@ -333,34 +333,55 @@ async def login_options():
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     try:
+        logger.info(f"Registration attempt for email: {user_data.email}")
+        
         # Check if user already exists
+        logger.info("Checking if user already exists...")
         existing_user = await db.users.find_one({"email": user_data.email})
         if existing_user:
+            logger.info("User already exists")
             raise HTTPException(status_code=400, detail="Email already registered")
         
+        logger.info("User doesn't exist, creating new user...")
+        
         # Create new user
+        logger.info("Hashing password...")
         hashed_password = get_password_hash(user_data.password)
+        logger.info("Password hashed successfully")
+        
+        logger.info("Creating User object...")
         user = User(
             email=user_data.email,
             hashed_password=hashed_password,
             company_name=user_data.company_name
         )
+        logger.info(f"User object created: {user.dict()}")
         
-        await db.users.insert_one(user.dict())
+        logger.info("Inserting user into database...")
+        result = await db.users.insert_one(user.dict())
+        logger.info(f"User inserted with ID: {result.inserted_id}")
         
         # Create access token
+        logger.info("Creating access token...")
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": user.email}, expires_delta=access_token_expires
         )
+        logger.info("Access token created successfully")
         
-        return {"access_token": access_token, "token_type": "bearer"}
+        response_data = {"access_token": access_token, "token_type": "bearer"}
+        logger.info("Registration successful, returning response")
+        return response_data
         
-    except HTTPException:
+    except HTTPException as he:
+        logger.error(f"HTTP Exception during registration: {he.detail}")
         raise
     except Exception as e:
-        logger.error(f"Registration error: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        logger.error(f"Unexpected error during registration: {str(e)}")
+        logger.error(f"Error type: {type(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @api_router.post("/auth/login")
 async def login(user_data: UserLogin):
