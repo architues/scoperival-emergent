@@ -25,16 +25,16 @@ from urllib.parse import urljoin, urlparse
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection with comprehensive SSL configuration
+# MongoDB connection with correct SSL configuration for motor/pymongo
 mongo_url = os.environ['MONGO_URL']
 
-# Create client with SSL bypass for production compatibility
+# Create client with proper motor/pymongo SSL parameters
 client = AsyncIOMotorClient(
     mongo_url,
-    ssl=True,
-    ssl_cert_reqs=None,  # Don't require SSL certificates
-    ssl_ca_certs=None,   # Don't use CA certificates  
-    ssl_match_hostname=False,  # Don't match hostname
+    # Use correct pymongo SSL parameters
+    tls=True,
+    tlsAllowInvalidCertificates=True,
+    tlsAllowInvalidHostnames=True,
     serverSelectionTimeoutMS=30000,  # 30 seconds
     connectTimeoutMS=20000,  # 20 seconds
     socketTimeoutMS=20000,   # 20 seconds
