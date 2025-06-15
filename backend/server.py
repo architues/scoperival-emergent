@@ -86,7 +86,7 @@ class User(BaseModel):
     email: EmailStr
     hashed_password: str
     company_name: str
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
 
 class UserCreate(BaseModel):
     email: EmailStr
