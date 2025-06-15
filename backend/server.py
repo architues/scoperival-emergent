@@ -46,11 +46,11 @@ security = HTTPBearer()
 # Create the main app without a prefix
 app = FastAPI(title="Scoperival API", description="Competitor Analysis Tool")
 
-# Add CORS middleware FIRST - More permissive configuration
+# Add CORS middleware FIRST - Most permissive for debugging
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=["*"],  # Allow all origins temporarily
+    allow_credentials=False,  # Change to False for now
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
