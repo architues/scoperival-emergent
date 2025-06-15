@@ -495,6 +495,10 @@ async def root():
 async def api_root():
     return {"message": "Scoperival API v1.0", "status": "healthy"}
 
+@app.options("/{path:path}")
+async def options_handler(path: str):
+    return {"message": "OK"}
+
 
 
 # Configure logging
