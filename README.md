@@ -24,7 +24,7 @@ A comprehensive competitive intelligence platform that monitors competitor websi
 3. **Environment Variables:**
    Set this in Vercel dashboard:
    ```
-   REACT_APP_BACKEND_URL=https://your-render-backend-url.onrender.com
+   REACT_APP_BACKEND_URL=https://scoperival-emergent.onrender.com
    ```
 
 4. **Deploy:**
