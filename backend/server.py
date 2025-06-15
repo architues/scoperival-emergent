@@ -25,16 +25,22 @@ from urllib.parse import urljoin, urlparse
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection with SSL configuration
+# MongoDB connection with comprehensive SSL configuration
 mongo_url = os.environ['MONGO_URL']
+
+# Create client with SSL bypass for production compatibility
 client = AsyncIOMotorClient(
     mongo_url,
-    tls=True,
-    tlsAllowInvalidCertificates=True,
-    serverSelectionTimeoutMS=5000,
-    connectTimeoutMS=10000,
-    socketTimeoutMS=10000,
-    maxPoolSize=10
+    ssl=True,
+    ssl_cert_reqs=None,  # Don't require SSL certificates
+    ssl_ca_certs=None,   # Don't use CA certificates  
+    ssl_match_hostname=False,  # Don't match hostname
+    serverSelectionTimeoutMS=30000,  # 30 seconds
+    connectTimeoutMS=20000,  # 20 seconds
+    socketTimeoutMS=20000,   # 20 seconds
+    maxPoolSize=10,
+    retryWrites=True,
+    w="majority"
 )
 db = client[os.environ['DB_NAME']]
 
