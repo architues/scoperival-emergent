@@ -1523,8 +1523,11 @@ const SettingsTab = ({ user }) => {
   );
 };
 
-// Main App Component
+// Main App Component - Updated
 function App() {
+  // Force cache refresh for deployment
+  console.log('Scoperival App - Version 1.1 - UI Fixes Applied');
+  
   return (
     <div className="App">
       <AuthContext>
