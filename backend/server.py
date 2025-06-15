@@ -551,10 +551,10 @@ async def startup_db_client():
         # Try alternative connection method
         try:
             mongo_url = os.environ['MONGO_URL']
-            # Create new client with even more lenient SSL settings
+            # Create new client with correct pymongo parameters
             client = AsyncIOMotorClient(
                 mongo_url,
-                ssl=False,  # Try without SSL first
+                tls=False,  # Disable TLS completely
                 serverSelectionTimeoutMS=30000,
                 connectTimeoutMS=20000,
                 retryWrites=True
