@@ -393,7 +393,7 @@ const Dashboard = ({ user, logout }) => {
 };
 
 // Overview Tab with new layout
-const OverviewTab = ({ stats, competitors, changes }) => {
+const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
   const recentChanges = changes.slice(0, 3);
   const topCompetitors = competitors.slice(0, 5);
 
@@ -493,7 +493,12 @@ const OverviewTab = ({ stats, competitors, changes }) => {
           <div className="section-card">
             <div className="section-header">
               <h3>Top Competitors</h3>
-              <button className="add-competitor-btn">+ Add Competitor</button>
+              <button 
+                className="add-competitor-btn"
+                onClick={onAddCompetitor}
+              >
+                + Add Competitor
+              </button>
             </div>
             <div className="competitors-table">
               <div className="table-header">
