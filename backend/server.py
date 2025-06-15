@@ -330,22 +330,13 @@ async def login_options():
         }
     )
 
-@api_router.post("/auth/register", response_model=Token)
+@api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     try:
         # Check if user already exists
         existing_user = await db.users.find_one({"email": user_data.email})
         if existing_user:
-            response = JSONResponse(
-                content={"detail": "Email already registered"},
-                status_code=400,
-                headers={
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "POST, OPTIONS",
-                    "Access-Control-Allow-Headers": "*",
-                }
-            )
-            return response
+            raise HTTPException(status_code=400, detail="Email already registered")
         
         # Create new user
         hashed_password = get_password_hash(user_data.password)
@@ -363,24 +354,13 @@ async def register(user_data: UserCreate):
             data={"sub": user.email}, expires_delta=access_token_expires
         )
         
-        return JSONResponse(
-            content={"access_token": access_token, "token_type": "bearer"},
-            headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST, OPTIONS",
-                "Access-Control-Allow-Headers": "*",
-            }
-        )
+        return {"access_token": access_token, "token_type": "bearer"}
+        
+    except HTTPException:
+        raise
     except Exception as e:
-        return JSONResponse(
-            content={"detail": str(e)},
-            status_code=500,
-            headers={
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST, OPTIONS",
-                "Access-Control-Allow-Headers": "*",
-            }
-        )
+        logger.error(f"Registration error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @api_router.post("/auth/login", response_model=Token)
 async def login(user_data: UserLogin):
