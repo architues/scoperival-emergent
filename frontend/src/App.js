@@ -170,6 +170,20 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => 
 const TopHeader = ({ user, logout, activeTab }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showUserMenu && !event.target.closest('.user-menu-container')) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
+  
   const getPageTitle = (tab) => {
     const titles = {
       overview: 'Dashboard Overview',
