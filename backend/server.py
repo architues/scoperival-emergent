@@ -25,6 +25,13 @@ from urllib.parse import urljoin, urlparse
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Configure logging first
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 # MongoDB connection - simplified approach
 mongo_url = os.environ['MONGO_URL']
 
@@ -32,8 +39,16 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# OpenAI setup
-openai.api_key = os.environ['OPENAI_API_KEY']
+# OpenAI setup (make it optional)
+try:
+    openai_key = os.environ.get('OPENAI_API_KEY')
+    if openai_key:
+        openai.api_key = openai_key
+        logger.info("OpenAI API key loaded successfully")
+    else:
+        logger.warning("OpenAI API key not provided")
+except Exception as e:
+    logger.warning(f"OpenAI setup failed: {str(e)}")
 
 # Auth setup
 SECRET_KEY = "scoperival_secret_key_12345"
