@@ -25,23 +25,11 @@ from urllib.parse import urljoin, urlparse
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection with correct SSL configuration for motor/pymongo
+# MongoDB connection - simplified approach
 mongo_url = os.environ['MONGO_URL']
 
-# Create client with proper motor/pymongo SSL parameters
-client = AsyncIOMotorClient(
-    mongo_url,
-    # Use correct pymongo SSL parameters
-    tls=True,
-    tlsAllowInvalidCertificates=True,
-    tlsAllowInvalidHostnames=True,
-    serverSelectionTimeoutMS=30000,  # 30 seconds
-    connectTimeoutMS=20000,  # 20 seconds
-    socketTimeoutMS=20000,   # 20 seconds
-    maxPoolSize=10,
-    retryWrites=True,
-    w="majority"
-)
+# Simple client configuration that should work with any pymongo version
+client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # OpenAI setup
