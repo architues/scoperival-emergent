@@ -117,13 +117,11 @@ const Logo = ({ size = "default", collapsed = false }) => {
   );
 };
 
-// Sidebar Navigation Component
+// Sidebar Navigation Component - Simplified
 const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => {
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: '📊' },
     { id: 'competitors', label: 'Competitors', icon: '🏢' },
-    { id: 'changes', label: 'Changes', icon: '🔄' },
-    { id: 'analytics', label: 'Analytics', icon: '📈' },
     { id: 'settings', label: 'Settings', icon: '⚙️' }
   ];
 
@@ -145,7 +143,7 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => 
             <span className="search-icon">🔍</span>
             <input 
               type="text" 
-              placeholder="Search competitors..." 
+              placeholder="Search..." 
               className="sidebar-search-input"
             />
           </div>
