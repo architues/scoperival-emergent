@@ -1365,9 +1365,8 @@ const SettingsTab = ({ user }) => {
     <div className="space-y-8">
       {/* Account Settings */}
       <div className="modern-card p-6">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-700/50">
-          <h3 className="text-xl font-semibold text-white flex items-center">
-            <span className="mr-3 text-2xl">👤</span>
+        <div className="flex items-center justify-between mb-6 pb-4" style={{ borderBottom: '1px solid var(--border-light)' }}>
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
             Account Settings
           </h3>
           <button 
@@ -1380,50 +1379,27 @@ const SettingsTab = ({ user }) => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Company Name</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Company Name</label>
             <input 
               type="text" 
-              value={user?.company_name || 'Scoperival'} 
+              value={user?.company_name || 'Your Company'} 
               className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
               disabled={!isEditing}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Email Address</label>
+            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Email Address</label>
             <input 
               type="email" 
-              value={user?.email || 'ahaan.pandit@gmail.com'} 
+              value={user?.email || 'you@company.com'} 
               className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
               disabled={!isEditing}
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Time Zone</label>
-            <select 
-              className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
-              disabled={!isEditing}
-            >
-              <option>UTC-05:00 (Eastern Time)</option>
-              <option>UTC-08:00 (Pacific Time)</option>
-              <option>UTC+00:00 (GMT)</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Language</label>
-            <select 
-              className={`modern-input w-full ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
-              disabled={!isEditing}
-            >
-              <option>English (US)</option>
-              <option>English (UK)</option>
-              <option>Spanish</option>
-              <option>French</option>
-            </select>
           </div>
         </div>
         
         {isEditing && (
-          <div className="flex justify-end space-x-3 mt-6 pt-4 border-t border-slate-700/50">
+          <div className="flex justify-end space-x-3 mt-6 pt-4" style={{ borderTop: '1px solid var(--border-light)' }}>
             <button 
               onClick={() => setIsEditing(false)}
               className="btn-secondary px-4 py-2"
@@ -1439,18 +1415,17 @@ const SettingsTab = ({ user }) => {
 
       {/* Notification Settings */}
       <div className="modern-card p-6">
-        <div className="flex items-center mb-6 pb-4 border-b border-slate-700/50">
-          <h3 className="text-xl font-semibold text-white flex items-center">
-            <span className="mr-3 text-2xl">🔔</span>
-            Notification Settings
+        <div className="flex items-center mb-6 pb-4" style={{ borderBottom: '1px solid var(--border-light)' }}>
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
+            Notifications
           </h3>
         </div>
         
         <div className="space-y-6">
-          <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg">
+          <div className="flex items-center justify-between p-4 rounded-lg" style={{ background: 'var(--bg-secondary)' }}>
             <div>
-              <h4 className="text-white font-medium mb-1">Email Notifications</h4>
-              <p className="text-slate-400 text-sm">Receive alerts for high-priority competitor changes</p>
+              <h4 className="font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Email Notifications</h4>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Receive alerts for competitor changes</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input 
@@ -1459,169 +1434,54 @@ const SettingsTab = ({ user }) => {
                 onChange={(e) => setEmailNotifications(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
-            </label>
-          </div>
-          
-          <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg">
-            <div>
-              <h4 className="text-white font-medium mb-1">Weekly Summary Reports</h4>
-              <p className="text-slate-400 text-sm">Get weekly insights and trend analysis via email</p>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input 
-                type="checkbox" 
-                checked={weeklyReports}
-                onChange={(e) => setWeeklyReports(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
 
-          <div className="p-4 bg-slate-800/30 rounded-lg">
-            <h4 className="text-white font-medium mb-3">Notification Frequency</h4>
+          <div className="p-4 rounded-lg" style={{ background: 'var(--bg-secondary)' }}>
+            <h4 className="font-medium mb-3" style={{ color: 'var(--text-primary)' }}>Scan Frequency</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {['Instant', 'Hourly', 'Daily'].map((freq) => (
-                <label key={freq} className="flex items-center p-3 border border-slate-600 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+              {[
+                { value: '12h', label: 'Every 12 hours' },
+                { value: '24h', label: 'Daily' },
+                { value: '48h', label: 'Every 2 days' }
+              ].map((freq) => (
+                <label key={freq.value} className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" style={{ borderColor: 'var(--border-light)' }}>
                   <input 
                     type="radio" 
                     name="frequency" 
-                    value={freq.toLowerCase()}
-                    className="text-blue-500 mr-3"
-                    defaultChecked={freq === 'Daily'}
-                  />
-                  <span className="text-slate-300">{freq}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Monitoring Settings */}
-      <div className="modern-card p-6">
-        <div className="flex items-center mb-6 pb-4 border-b border-slate-700/50">
-          <h3 className="text-xl font-semibold text-white flex items-center">
-            <span className="mr-3 text-2xl">⚙️</span>
-            Monitoring Settings
-          </h3>
-        </div>
-        
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-3">Scan Frequency</label>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              {[
-                { value: '6h', label: 'Every 6 hours', desc: 'High frequency' },
-                { value: '12h', label: 'Every 12 hours', desc: 'Balanced' },
-                { value: '24h', label: 'Daily', desc: 'Recommended' },
-                { value: '48h', label: 'Every 2 days', desc: 'Low frequency' }
-              ].map((option) => (
-                <label 
-                  key={option.value} 
-                  className={`flex flex-col p-4 border rounded-lg cursor-pointer transition-all ${
-                    scanFrequency === option.value 
-                      ? 'border-blue-500 bg-blue-500/10' 
-                      : 'border-slate-600 hover:border-slate-500'
-                  }`}
-                >
-                  <input 
-                    type="radio" 
-                    name="scanFrequency" 
-                    value={option.value}
-                    checked={scanFrequency === option.value}
+                    value={freq.value}
+                    checked={scanFrequency === freq.value}
                     onChange={(e) => setScanFrequency(e.target.value)}
-                    className="sr-only"
+                    className="text-blue-500 mr-3"
                   />
-                  <span className="text-white font-medium text-sm">{option.label}</span>
-                  <span className="text-slate-400 text-xs mt-1">{option.desc}</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>{freq.label}</span>
                 </label>
               ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Detection Sensitivity</label>
-              <select className="modern-input w-full">
-                <option>High - Detect all changes</option>
-                <option>Medium - Major changes only</option>
-                <option>Low - Critical changes only</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Auto-scan New Pages</label>
-              <select className="modern-input w-full">
-                <option>Enabled</option>
-                <option>Disabled</option>
-                <option>Ask me first</option>
-              </select>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Security Settings */}
+      {/* Account Actions */}
       <div className="modern-card p-6">
-        <div className="flex items-center mb-6 pb-4 border-b border-slate-700/50">
-          <h3 className="text-xl font-semibold text-white flex items-center">
-            <span className="mr-3 text-2xl">🔒</span>
-            Security & Privacy
+        <div className="flex items-center mb-6 pb-4" style={{ borderBottom: '1px solid var(--border-light)' }}>
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
+            Account Actions
           </h3>
         </div>
         
         <div className="space-y-4">
-          <button className="w-full md:w-auto btn-secondary px-6 py-3 text-left">
+          <button className="btn-secondary w-full md:w-auto px-6 py-3">
             Change Password
           </button>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-slate-800/30 rounded-lg">
-              <h4 className="text-white font-medium mb-2">Two-Factor Authentication</h4>
-              <p className="text-slate-400 text-sm mb-3">Add an extra layer of security to your account</p>
-              <button className="btn-electric text-sm px-4 py-2">
-                Enable 2FA
-              </button>
-            </div>
-            
-            <div className="p-4 bg-slate-800/30 rounded-lg">
-              <h4 className="text-white font-medium mb-2">API Access</h4>
-              <p className="text-slate-400 text-sm mb-3">Manage API keys and integrations</p>
-              <button className="btn-secondary text-sm px-4 py-2">
-                Manage Keys
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Danger Zone */}
-      <div className="modern-card p-6 border-red-500/30">
-        <div className="flex items-center mb-6 pb-4 border-b border-red-500/30">
-          <h3 className="text-xl font-semibold text-red-400 flex items-center">
-            <span className="mr-3 text-2xl">⚠️</span>
-            Danger Zone
-          </h3>
-        </div>
-        
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-red-900/10 border border-red-500/30 rounded-lg">
-            <div>
-              <h4 className="text-red-400 font-medium mb-1">Export Data</h4>
-              <p className="text-slate-400 text-sm">Download all your competitor data and analysis</p>
-            </div>
-            <button className="bg-red-600/20 text-red-400 border border-red-500/30 px-4 py-2 rounded-lg hover:bg-red-600/30 transition-colors text-sm">
-              Export
-            </button>
-          </div>
+          <button className="btn-secondary w-full md:w-auto px-6 py-3">
+            Export Data
+          </button>
           
-          <div className="flex items-center justify-between p-4 bg-red-900/10 border border-red-500/30 rounded-lg">
-            <div>
-              <h4 className="text-red-400 font-medium mb-1">Delete Account</h4>
-              <p className="text-slate-400 text-sm">Permanently delete your account and all data</p>
-            </div>
-            <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
+          <div className="pt-4" style={{ borderTop: '1px solid var(--border-light)' }}>
+            <button className="text-red-600 hover:text-red-700 text-sm font-medium">
               Delete Account
             </button>
           </div>
