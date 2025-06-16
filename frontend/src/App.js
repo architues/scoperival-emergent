@@ -915,8 +915,17 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
   const [localCompetitors, setLocalCompetitors] = useState(competitors);
   const [loading, setLoading] = useState(false);
 
+  // Debug logging
+  console.log('CompetitorsTab render:', {
+    propsCompetitors: competitors,
+    localCompetitors: localCompetitors,
+    competitorsLength: competitors?.length,
+    localCompetitorsLength: localCompetitors?.length
+  });
+
   // Sync with props only when they change, no automatic refresh
   useEffect(() => {
+    console.log('CompetitorsTab useEffect - syncing competitors:', competitors);
     setLocalCompetitors(competitors);
   }, [competitors]);
 
