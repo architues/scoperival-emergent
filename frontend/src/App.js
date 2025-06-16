@@ -607,10 +607,22 @@ const Dashboard = ({ user, logout }) => {
   );
 };
 
-// Overview Tab with new layout
+// Overview Tab with new layout - Version 2.0
 const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
+  console.log('OverviewTab render - onAddCompetitor function:', typeof onAddCompetitor);
+  
   const recentChanges = changes.slice(0, 3);
   const topCompetitors = competitors.slice(0, 5);
+
+  const handleAddCompetitorClick = () => {
+    console.log('Add Competitor button clicked!');
+    if (onAddCompetitor) {
+      console.log('Calling onAddCompetitor function');
+      onAddCompetitor();
+    } else {
+      console.error('onAddCompetitor function not provided');
+    }
+  };
 
   return (
     <div className="overview-layout">
@@ -710,7 +722,27 @@ const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
               <h3>Top Competitors</h3>
               <button 
                 className="add-competitor-btn"
-                onClick={onAddCompetitor}
+                onClick={handleAddCompetitorClick}
+                style={{
+                  background: 'linear-gradient(135deg, #0ea5e9, #3b82f6)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                }}
               >
                 + Add Competitor
               </button>
