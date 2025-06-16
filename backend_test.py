@@ -244,6 +244,26 @@ def test_competitors_api():
             pages_data = response.json()
             suggestions = pages_data.get("suggestions", [])
             logger.info(f"Discover pages test: PASSED - Found {len(suggestions)} page suggestions")
+            
+            # Test adding tracked pages if we have suggestions
+            if suggestions and competitor_id:
+                # Take up to 2 suggestions for testing
+                test_pages = suggestions[:2]
+                urls_data = [{"url": page.url, "page_type": page.page_type} for page in test_pages]
+                
+                response = requests.post(
+                    f"{API_URL}/competitors/{competitor_id}/pages",
+                    json={"urls": urls_data},
+                    headers={"Authorization": f"Bearer {auth_token}"}
+                )
+                log_response(response, "Add tracked pages")
+                
+                if response.status_code == 200:
+                    logger.info("Add tracked pages test: PASSED")
+                else:
+                    logger.error(f"Add tracked pages failed with status {response.status_code}")
+                    # Non-critical test, continue
+            
         else:
             logger.error(f"Discover pages failed with status {response.status_code}")
             # Non-critical test, continue
