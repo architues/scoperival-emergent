@@ -290,7 +290,6 @@ const TopHeader = ({ user, logout, activeTab }) => {
     </header>
   );
 };
-};
 
 // Login/Register Component
 // Authentication Form Component - Clean Design
