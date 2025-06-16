@@ -1701,10 +1701,13 @@ const SettingsTab = ({ user }) => {
   );
 };
 
-// Main App Component - Updated
+// Main App Component - Version 2.0 - AGGRESSIVE UI FIXES
 function App() {
-  // Force cache refresh for deployment
-  console.log('Scoperival App - Version 1.1 - UI Fixes Applied');
+  // Force cache refresh for deployment with console logs
+  console.log('🚀 Scoperival App - Version 2.0 - AGGRESSIVE UI FIXES DEPLOYED');
+  console.log('✅ User menu dropdown enhanced with inline styles');
+  console.log('✅ Add Competitor button with click handlers and styles');
+  console.log('✅ Debug logs added for troubleshooting');
   
   return (
     <div className="App">
