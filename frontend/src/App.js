@@ -710,6 +710,13 @@ const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
 
   const handleAddCompetitorClick = () => {
     console.log('Add Competitor button clicked!');
+    
+    // Track add competitor button click
+    track('add_competitor_clicked', { 
+      source: 'overview_tab',
+      user_company: competitors.length 
+    });
+    
     if (onAddCompetitor) {
       console.log('Calling onAddCompetitor function');
       onAddCompetitor();
