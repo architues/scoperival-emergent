@@ -1811,14 +1811,15 @@ const SettingsTab = ({ user }) => {
   );
 };
 
-// Main App Component - Version 2.0 - AGGRESSIVE UI FIXES
+// Main App Component - Version 2.1 - Clean UI + Analytics
 function App() {
   // Force cache refresh for deployment with console logs
-  console.log('🚀 Scoperival App - Version 2.0 - AGGRESSIVE UI FIXES DEPLOYED');
+  console.log('🚀 Scoperival App - Version 2.1 - Clean UI + Analytics Deployed');
   console.log('✅ User menu dropdown enhanced with inline styles');
   console.log('✅ Add Competitor button with click handlers and styles');
   console.log('✅ Debug logs added for troubleshooting');
   console.log('📊 Vercel Analytics enabled for tracking');
+  console.log('🎨 Clean professional UI design applied');
   
   return (
     <div className="App">
