@@ -632,6 +632,8 @@ const Dashboard = ({ user, logout }) => {
       // Only fetch competitors - remove the other endpoints that may not exist
       const competitorsRes = await axios.get(`${API}/competitors`);
       
+      console.log('Dashboard fetchDashboardData - API response:', competitorsRes.data);
+      
       setCompetitors(competitorsRes.data);
       
       // Set mock data for stats and changes for now
