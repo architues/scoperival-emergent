@@ -367,13 +367,57 @@ def test_database_connection():
     
     return True
 
+def test_error_handling():
+    """Test error handling in the API"""
+    global auth_token
+    logger.info("\n=== Testing Error Handling ===")
+    
+    # Test authentication failure
+    try:
+        response = requests.get(
+            f"{API_URL}/me",
+            headers={"Authorization": "Bearer invalid_token"}
+        )
+        log_response(response, "Authentication failure test")
+        
+        if response.status_code == 401:
+            logger.info("Authentication failure test: PASSED - Correctly returned 401 for invalid token")
+        else:
+            logger.error(f"Authentication failure test FAILED: Expected 401, got {response.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"Authentication failure test FAILED: {str(e)}")
+        return False
+    
+    # Test invalid competitor creation (missing required field)
+    if auth_token:
+        try:
+            response = requests.post(
+                f"{API_URL}/competitors",
+                json={"domain": "example.com"},  # Missing company_name
+                headers={"Authorization": f"Bearer {auth_token}"}
+            )
+            log_response(response, "Invalid competitor creation test")
+            
+            if response.status_code in [400, 422]:  # FastAPI validation error
+                logger.info("Invalid competitor creation test: PASSED - Correctly rejected invalid data")
+            else:
+                logger.error(f"Invalid competitor creation test FAILED: Expected 400/422, got {response.status_code}")
+                return False
+        except Exception as e:
+            logger.error(f"Invalid competitor creation test FAILED: {str(e)}")
+            return False
+    
+    return True
+
 def run_all_tests():
     """Run all tests and return results"""
     results = {
         "Health Check API": test_health_check(),
         "Authentication API": test_auth_api() and test_me_endpoint(),
         "Competitors API": test_competitors_api(),
-        "Database Connection": test_database_connection()
+        "Database Connection": test_database_connection(),
+        "Error Handling": test_error_handling()
     }
     
     logger.info("\n=== Test Results Summary ===")
