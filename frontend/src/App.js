@@ -1779,6 +1779,7 @@ function App() {
   console.log('✅ User menu dropdown enhanced with inline styles');
   console.log('✅ Add Competitor button with click handlers and styles');
   console.log('✅ Debug logs added for troubleshooting');
+  console.log('📊 Vercel Analytics enabled for tracking');
   
   return (
     <div className="App">
@@ -1791,6 +1792,7 @@ function App() {
           )
         )}
       </AuthContext>
+      <Analytics />
     </div>
   );
 }
