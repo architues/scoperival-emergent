@@ -550,8 +550,6 @@ const Dashboard = ({ user, logout }) => {
               />
             )}
             {activeTab === 'competitors' && <CompetitorsTab competitors={competitors} onRefresh={fetchDashboardData} />}
-            {activeTab === 'changes' && <ChangesTab changes={changes} competitors={competitors} />}
-            {activeTab === 'analytics' && <AnalyticsTab stats={stats} competitors={competitors} changes={changes} />}
             {activeTab === 'settings' && <SettingsTab user={user} />}
           </div>
         </div>
