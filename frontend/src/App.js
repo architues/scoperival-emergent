@@ -36,9 +36,15 @@ const AuthContext = ({ children }) => {
       setToken(access_token);
       localStorage.setItem('token', access_token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+      
+      // Track successful login
+      track('user_login', { email: email });
+      
       return true;
     } catch (error) {
       console.error('Login failed:', error);
+      // Track failed login attempt
+      track('login_failed', { email: email });
       return false;
     }
   };
@@ -54,14 +60,23 @@ const AuthContext = ({ children }) => {
       setToken(access_token);
       localStorage.setItem('token', access_token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+      
+      // Track successful registration
+      track('user_register', { email: email, company_name: company_name });
+      
       return true;
     } catch (error) {
       console.error('Registration failed:', error);
+      // Track failed registration attempt
+      track('registration_failed', { email: email, company_name: company_name });
       return false;
     }
   };
 
   const logout = () => {
+    // Track logout event
+    track('user_logout');
+    
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
