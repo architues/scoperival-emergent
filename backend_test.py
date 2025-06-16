@@ -284,8 +284,8 @@ def test_database_connection():
     
     # Create a unique competitor for this test
     unique_competitor = {
-        "domain": f"test-{uuid.uuid4()}.com",
-        "company_name": f"Test Company {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        "domain": f"paypal-{uuid.uuid4()}.com",
+        "company_name": f"PayPal Holdings Inc. {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
     }
     
     # Create the competitor
