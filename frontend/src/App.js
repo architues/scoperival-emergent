@@ -291,7 +291,6 @@ const TopHeader = ({ user, logout, activeTab }) => {
   );
 };
 
-// Login/Register Component
 // Authentication Form Component - Clean Design
 const AuthForm = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -350,7 +349,7 @@ const AuthForm = ({ onLogin, onRegister }) => {
             fontSize: '14px',
             color: 'var(--text-muted)'
           }}>
-            {isLogin ? 'Sign in to your Scoperival account' : 'Start tracking your competitors today'}
+            {isLogin ? 'Sign in to your Scoperival account' : 'Start tracking your competitors'}
           </p>
         </div>
         
@@ -431,7 +430,7 @@ const AuthForm = ({ onLogin, onRegister }) => {
             {loading ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                 <div className="loading-spinner" style={{width: '16px', height: '16px'}}></div>
-                Processing...
+                {isLogin ? 'Signing in...' : 'Creating account...'}
               </div>
             ) : (
               isLogin ? 'Sign In' : 'Create Account'
