@@ -20,13 +20,13 @@ API_URL = f"{BACKEND_URL}/api"
 # Test data
 TEST_USER = {
     "email": f"test.user.{uuid.uuid4()}@example.com",
-    "password": "TestPassword123!",
-    "company_name": "Test Company"
+    "password": "SecurePassword123!",
+    "company_name": "Acme Analytics Inc."
 }
 
 TEST_COMPETITOR = {
-    "domain": "notion.so",
-    "company_name": "Notion"
+    "domain": "stripe.com",
+    "company_name": "Stripe Inc."
 }
 
 # Store auth token
