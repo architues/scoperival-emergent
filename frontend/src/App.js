@@ -1355,7 +1355,7 @@ const AnalyticsTab = ({ stats, competitors, changes }) => {
   );
 };
 
-// Enhanced Settings Tab with proper UI
+// Simplified Settings Tab
 const SettingsTab = ({ user }) => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [weeklyReports, setWeeklyReports] = useState(true);
