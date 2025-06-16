@@ -249,7 +249,7 @@ def test_competitors_api():
             if suggestions and competitor_id:
                 # Take up to 2 suggestions for testing
                 test_pages = suggestions[:2]
-                urls_data = [{"url": page.url, "page_type": page.page_type} for page in test_pages]
+                urls_data = [{"url": page["url"], "page_type": page["page_type"]} for page in test_pages]
                 
                 response = requests.post(
                     f"{API_URL}/competitors/{competitor_id}/pages",
