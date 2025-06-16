@@ -46,7 +46,7 @@
   
   - task: "Competitors Display"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/App.js"
     stuck_count: 1
     priority: "high"
@@ -58,6 +58,9 @@
       - working: false
         agent: "testing"
         comment: "Competitors are not displaying in the UI even though they exist in the API response. The API correctly returns competitor data (confirmed with direct fetch requests), but there's a mismatch between the API response and what's displayed in the UI. The issue appears to be in the CompetitorsTab component where localCompetitors state is not being properly updated or rendered."
+      - working: true
+        agent: "testing"
+        comment: "The issue has been resolved. The API is correctly returning competitor data and the UI is now displaying it properly. The problem was related to the API requests being made to localhost:8001 instead of using the correct REACT_APP_BACKEND_URL. After fixing this issue, competitors are now properly displayed in both the Competitors tab and the Overview tab."
 ##   - task: "Task name"
 ##     implemented: true
 ##     working: true  # or false or "NA"
