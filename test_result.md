@@ -206,7 +206,10 @@ test_plan:
     - "Authentication API"
     - "Competitors API"
     - "Database Connection"
-  stuck_tasks: []
+    - "Authentication and Login"
+    - "Competitors Display"
+  stuck_tasks:
+    - "Competitors Display"
   test_all: true
   test_priority: "high_first"
 
