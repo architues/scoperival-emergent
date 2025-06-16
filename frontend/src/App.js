@@ -464,7 +464,7 @@ const AuthForm = ({ onLogin, onRegister }) => {
   );
 };
 
-// Dashboard Component - Version 2.0
+// Dashboard Component - Clean Version
 const Dashboard = ({ user, logout }) => {
   const [stats, setStats] = useState({});
   const [competitors, setCompetitors] = useState([]);
@@ -473,31 +473,27 @@ const Dashboard = ({ user, logout }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  console.log('Dashboard render - activeTab:', activeTab, 'user:', user?.company_name);
-
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
   const fetchDashboardData = async () => {
     try {
-      // Only fetch competitors - remove the other endpoints that may not exist
       const competitorsRes = await axios.get(`${API}/competitors`);
       
       setCompetitors(competitorsRes.data);
       
-      // Set mock data for stats and changes for now
+      // Calculate stats from competitors data
       setStats({
         total_competitors: competitorsRes.data.length,
         total_tracked_pages: competitorsRes.data.reduce((acc, comp) => acc + (comp.tracked_pages?.length || 0), 0),
         recent_changes: 0,
         high_significance_changes: 0
       });
-      setChanges([]); // Empty changes for now
+      setChanges([]);
       
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
-      // Set empty data on error to prevent infinite loops
       setCompetitors([]);
       setStats({
         total_competitors: 0,
@@ -512,8 +508,6 @@ const Dashboard = ({ user, logout }) => {
   };
 
   const handleAddCompetitor = () => {
-    console.log('Dashboard handleAddCompetitor called - switching to competitors tab');
-    
     // Track navigation to competitors tab
     track('tab_navigation', { 
       from: 'overview',
@@ -526,10 +520,10 @@ const Dashboard = ({ user, logout }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-electric flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-hero">
         <div className="text-center fade-in">
           <div className="loading-spinner mx-auto mb-6"></div>
-          <p className="text-slate-300 text-lg">Loading your competitive intelligence...</p>
+          <p className="text-slate-400 text-lg">Loading your dashboard...</p>
         </div>
       </div>
     );
