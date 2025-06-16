@@ -653,6 +653,14 @@ const Dashboard = ({ user, logout }) => {
 
   const handleAddCompetitor = () => {
     console.log('Dashboard handleAddCompetitor called - switching to competitors tab');
+    
+    // Track navigation to competitors tab
+    track('tab_navigation', { 
+      from: 'overview',
+      to: 'competitors',
+      trigger: 'add_competitor_button'
+    });
+    
     setActiveTab('competitors');
   };
 
