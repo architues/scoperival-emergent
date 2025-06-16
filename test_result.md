@@ -29,6 +29,35 @@
 ##         -comment: "Detailed comment about status"
 ##
 ## frontend:
+  - task: "Authentication and Login"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test user login and authentication flow"
+      - working: true
+        agent: "testing"
+        comment: "Authentication is working correctly. Users can register new accounts and log in successfully. The JWT token is properly stored in localStorage and used for API requests."
+  
+  - task: "Competitors Display"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Need to test if competitors are properly displayed in the dashboard"
+      - working: false
+        agent: "testing"
+        comment: "Competitors are not displaying in the UI even though they exist in the API response. The API correctly returns competitor data (confirmed with direct fetch requests), but there's a mismatch between the API response and what's displayed in the UI. The issue appears to be in the CompetitorsTab component where localCompetitors state is not being properly updated or rendered."
 ##   - task: "Task name"
 ##     implemented: true
 ##     working: true  # or false or "NA"
