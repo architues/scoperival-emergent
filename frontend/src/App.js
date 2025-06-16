@@ -563,27 +563,20 @@ const Dashboard = ({ user, logout }) => {
   );
 };
 
-// Overview Tab with new layout - Version 2.0
+// Overview Tab - Clean Design
 const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
-  console.log('OverviewTab render - onAddCompetitor function:', typeof onAddCompetitor);
-  
   const recentChanges = changes.slice(0, 3);
   const topCompetitors = competitors.slice(0, 5);
 
   const handleAddCompetitorClick = () => {
-    console.log('Add Competitor button clicked!');
-    
     // Track add competitor button click
     track('add_competitor_clicked', { 
       source: 'overview_tab',
-      user_company: competitors.length 
+      competitor_count: competitors.length 
     });
     
     if (onAddCompetitor) {
-      console.log('Calling onAddCompetitor function');
       onAddCompetitor();
-    } else {
-      console.error('onAddCompetitor function not provided');
     }
   };
 
@@ -594,23 +587,23 @@ const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
         <div className="stats-grid">
           <div className="stat-card primary">
             <div className="stat-header">
-              <span className="stat-icon">📊</span>
+              <span className="stat-icon">🏢</span>
               <span className="stat-trend up">+12%</span>
             </div>
             <div className="stat-content">
               <h3 className="stat-number">{stats.total_competitors || 0}</h3>
-              <p className="stat-label">Total Competitors</p>
+              <p className="stat-label">Competitors</p>
             </div>
           </div>
           
           <div className="stat-card">
             <div className="stat-header">
-              <span className="stat-icon">🔍</span>
+              <span className="stat-icon">📄</span>
               <span className="stat-trend up">+8%</span>
             </div>
             <div className="stat-content">
               <h3 className="stat-number">{stats.total_tracked_pages || 0}</h3>
-              <p className="stat-label">Tracked Pages</p>
+              <p className="stat-label">Pages Tracked</p>
             </div>
           </div>
           
@@ -682,30 +675,10 @@ const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
         <div className="right-column">
           <div className="section-card">
             <div className="section-header">
-              <h3>Top Competitors</h3>
+              <h3>Competitors</h3>
               <button 
                 className="add-competitor-btn"
                 onClick={handleAddCompetitorClick}
-                style={{
-                  background: 'linear-gradient(135deg, #0ea5e9, #3b82f6)',
-                  color: 'white',
-                  border: 'none',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-                }}
               >
                 + Add Competitor
               </button>
@@ -740,6 +713,13 @@ const OverviewTab = ({ stats, competitors, changes, onAddCompetitor }) => {
                 <div className="empty-state">
                   <span className="empty-icon">🏢</span>
                   <p>No competitors added yet</p>
+                  <button 
+                    className="btn-primary" 
+                    onClick={handleAddCompetitorClick}
+                    style={{ marginTop: '12px' }}
+                  >
+                    Add Your First Competitor
+                  </button>
                 </div>
               )}
             </div>
