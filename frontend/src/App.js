@@ -415,6 +415,7 @@ const TopHeader = ({ user, logout, activeTab }) => {
 };
 
 // Login/Register Component
+// Authentication Form Component - Clean Design
 const AuthForm = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -442,20 +443,55 @@ const AuthForm = ({ onLogin, onRegister }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
-      <div className="auth-form w-full max-w-md fade-in">
-        <div className="text-center mb-8">
-          <Logo size="large" />
-          <p className="text-slate-300 mt-4 text-lg">AI-Powered Competitor Intelligence</p>
+    <div className="min-h-screen bg-gradient-hero flex items-center justify-center" style={{ padding: '20px' }}>
+      <div className="auth-form" style={{ maxWidth: '400px', width: '100%' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            background: 'var(--blue-primary)',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 16px',
+            color: 'white',
+            fontSize: '24px',
+            fontWeight: '600'
+          }}>
+            S
+          </div>
+          <h1 style={{
+            fontSize: '24px',
+            fontWeight: '600',
+            color: 'var(--text-primary)',
+            marginBottom: '8px'
+          }}>
+            {isLogin ? 'Welcome back' : 'Create account'}
+          </h1>
+          <p style={{
+            fontSize: '14px',
+            color: 'var(--text-muted)'
+          }}>
+            {isLogin ? 'Sign in to your Scoperival account' : 'Start tracking your competitors today'}
+          </p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">Email Address</label>
+            <label style={{
+              display: 'block',
+              fontSize: '14px',
+              fontWeight: '500',
+              color: 'var(--text-primary)',
+              marginBottom: '6px'
+            }}>
+              Email Address
+            </label>
             <input
               type="email"
               required
-              className="modern-input w-full"
+              className="modern-input"
               placeholder="Enter your email"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -463,11 +499,19 @@ const AuthForm = ({ onLogin, onRegister }) => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">Password</label>
+            <label style={{
+              display: 'block',
+              fontSize: '14px',
+              fontWeight: '500',
+              color: 'var(--text-primary)',
+              marginBottom: '6px'
+            }}>
+              Password
+            </label>
             <input
               type="password"
               required
-              className="modern-input w-full"
+              className="modern-input"
               placeholder="Enter your password"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
@@ -476,11 +520,19 @@ const AuthForm = ({ onLogin, onRegister }) => {
           
           {!isLogin && (
             <div>
-              <label className="block text-sm font-medium text-slate-200 mb-2">Company Name</label>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: 'var(--text-primary)',
+                marginBottom: '6px'
+              }}>
+                Company Name
+              </label>
               <input
                 type="text"
                 required
-                className="modern-input w-full"
+                className="modern-input"
                 placeholder="Enter your company name"
                 value={formData.company_name}
                 onChange={(e) => setFormData({...formData, company_name: e.target.value})}
@@ -491,11 +543,17 @@ const AuthForm = ({ onLogin, onRegister }) => {
           <button
             type="submit"
             disabled={loading}
-            className="btn-electric w-full"
+            className="btn-primary"
+            style={{
+              width: '100%',
+              padding: '12px',
+              fontSize: '16px',
+              fontWeight: '600'
+            }}
           >
             {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="loading-spinner mr-2" style={{width: '16px', height: '16px'}}></div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <div className="loading-spinner" style={{width: '16px', height: '16px'}}></div>
                 Processing...
               </div>
             ) : (
@@ -504,10 +562,22 @@ const AuthForm = ({ onLogin, onRegister }) => {
           </button>
         </form>
         
-        <div className="mt-6 text-center">
+        <div style={{
+          textAlign: 'center',
+          marginTop: '24px',
+          paddingTop: '20px',
+          borderTop: '1px solid var(--border-light)'
+        }}>
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--blue-primary)',
+              fontSize: '14px',
+              cursor: 'pointer',
+              textDecoration: 'underline'
+            }}
           >
             {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
           </button>
