@@ -156,7 +156,15 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => 
         {menuItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => setActiveTab(item.id)}
+            onClick={() => {
+              // Track sidebar navigation
+              track('sidebar_navigation', {
+                from: activeTab,
+                to: item.id,
+                trigger: 'sidebar_click'
+              });
+              setActiveTab(item.id);
+            }}
             className={`sidebar-nav-item ${activeTab === item.id ? 'active' : ''}`}
             title={collapsed ? item.label : ''}
           >
