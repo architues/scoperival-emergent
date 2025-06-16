@@ -1358,7 +1358,6 @@ const AnalyticsTab = ({ stats, competitors, changes }) => {
 // Simplified Settings Tab
 const SettingsTab = ({ user }) => {
   const [emailNotifications, setEmailNotifications] = useState(true);
-  const [weeklyReports, setWeeklyReports] = useState(true);
   const [scanFrequency, setScanFrequency] = useState('24h');
   const [isEditing, setIsEditing] = useState(false);
 
