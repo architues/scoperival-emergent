@@ -517,7 +517,7 @@ const AuthForm = ({ onLogin, onRegister }) => {
   );
 };
 
-// Dashboard Component
+// Dashboard Component - Version 2.0
 const Dashboard = ({ user, logout }) => {
   const [stats, setStats] = useState({});
   const [competitors, setCompetitors] = useState([]);
@@ -525,6 +525,8 @@ const Dashboard = ({ user, logout }) => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  console.log('Dashboard render - activeTab:', activeTab, 'user:', user?.company_name);
 
   useEffect(() => {
     fetchDashboardData();
@@ -562,6 +564,11 @@ const Dashboard = ({ user, logout }) => {
     }
   };
 
+  const handleAddCompetitor = () => {
+    console.log('Dashboard handleAddCompetitor called - switching to competitors tab');
+    setActiveTab('competitors');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-electric flex items-center justify-center">
@@ -593,7 +600,7 @@ const Dashboard = ({ user, logout }) => {
                 stats={stats} 
                 competitors={competitors} 
                 changes={changes} 
-                onAddCompetitor={() => setActiveTab('competitors')}
+                onAddCompetitor={handleAddCompetitor}
               />
             )}
             {activeTab === 'competitors' && <CompetitorsTab competitors={competitors} onRefresh={fetchDashboardData} />}
