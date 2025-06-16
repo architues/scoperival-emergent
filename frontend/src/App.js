@@ -191,18 +191,14 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => 
   );
 };
 
-// Top Header Component - Version 2.0
+// Top Header Component - Simplified
 const TopHeader = ({ user, logout, activeTab }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
-  
-  console.log('TopHeader render - showUserMenu:', showUserMenu, 'user:', user);
   
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      console.log('Click outside handler triggered');
       if (showUserMenu && !event.target.closest('.user-menu-container')) {
-        console.log('Closing user menu');
         setShowUserMenu(false);
       }
     };
@@ -215,9 +211,9 @@ const TopHeader = ({ user, logout, activeTab }) => {
   
   const getPageTitle = (tab) => {
     const titles = {
-      overview: 'Dashboard Overview',
-      competitors: 'Competitor Management',
-      changes: 'Change Analysis',
+      overview: 'Dashboard',
+      competitors: 'Competitors',
+      changes: 'Change History',
       analytics: 'Analytics',
       settings: 'Settings'
     };
@@ -225,7 +221,6 @@ const TopHeader = ({ user, logout, activeTab }) => {
   };
 
   const handleUserMenuClick = () => {
-    console.log('User menu button clicked, current state:', showUserMenu);
     setShowUserMenu(!showUserMenu);
   };
 
@@ -233,210 +228,68 @@ const TopHeader = ({ user, logout, activeTab }) => {
     <header className="top-header">
       <div className="header-left">
         <h1 className="page-title">{getPageTitle(activeTab)}</h1>
-        <p className="page-subtitle">AI-powered competitive intelligence platform</p>
+        <p className="page-subtitle">Competitive intelligence platform</p>
       </div>
       
-      <div className="header-right">
-        <div className="header-stats">
-          <div className="stat-item">
-            <span className="stat-label">STATUS</span>
-            <span className="stat-value active">Active</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">LAST UPDATED</span>
-            <span className="stat-value">{new Date().toLocaleDateString()}</span>
-          </div>
-        </div>
-        
-        <div className="header-actions">
-          <button className="notification-btn">
-            🔔
-            <span className="notification-badge">3</span>
+      <div className="header-right">        
+        <div className="user-menu-container">
+          <button 
+            className="user-menu-trigger"
+            onClick={handleUserMenuClick}
+          >
+            <div className="user-avatar-header">
+              {user?.company_name?.charAt(0)?.toUpperCase() || 'U'}
+            </div>
+            <span className="user-name-header">
+              {user?.company_name || 'User'}
+            </span>
+            <svg className="chevron-down" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M4.427 6.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 6H4.604a.25.25 0 00-.177.427z"/>
+            </svg>
           </button>
           
-          <div className="user-menu-container">
-            <button 
-              className="user-menu-trigger"
-              onClick={handleUserMenuClick}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                background: 'rgba(30, 41, 59, 0.8)',
-                border: '1px solid rgba(71, 85, 105, 0.3)',
-                padding: '6px 12px 6px 6px',
-                borderRadius: '12px',
-                cursor: 'pointer',
-                color: 'white'
-              }}
-            >
-              <div 
-                className="user-avatar-header"
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '8px',
-                  background: 'linear-gradient(135deg, #0ea5e9, #3b82f6)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontWeight: '600',
-                  fontSize: '14px'
-                }}
-              >
-                {user?.company_name?.charAt(0)?.toUpperCase() || 'U'}
-              </div>
-              <span 
-                className="user-name-header"
-                style={{
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: 'white',
-                  maxWidth: '120px',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {user?.company_name || 'User'}
-              </span>
-              <svg className="chevron-down" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M4.427 6.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 6H4.604a.25.25 0 00-.177.427z"/>
-              </svg>
-            </button>
-            
-            {showUserMenu && (
-              <div 
-                className="user-dropdown-menu"
-                style={{
-                  position: 'absolute',
-                  top: 'calc(100% + 8px)',
-                  right: '0',
-                  background: '#1e293b',
-                  border: '1px solid rgba(71, 85, 105, 0.3)',
-                  borderRadius: '12px',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
-                  minWidth: '200px',
-                  zIndex: '50',
-                  padding: '8px'
-                }}
-              >
-                <div 
-                  className="user-info-header"
-                  style={{
-                    padding: '12px',
-                    borderBottom: '1px solid rgba(71, 85, 105, 0.2)',
-                    marginBottom: '4px'
-                  }}
-                >
-                  <div style={{ fontWeight: '600', color: 'white', fontSize: '14px', marginBottom: '2px' }}>
-                    {user?.company_name || 'User'}
-                  </div>
-                  <div style={{ color: '#94a3b8', fontSize: '12px' }}>
-                    {user?.email || 'user@example.com'}
-                  </div>
+          {showUserMenu && (
+            <div className="user-dropdown-menu">
+              <div className="user-info-header">
+                <div className="user-name">
+                  {user?.company_name || 'User'}
                 </div>
-                
-                <div style={{ height: '1px', background: 'rgba(71, 85, 105, 0.2)', margin: '4px 0' }}></div>
-                
-                <button 
-                  className="dropdown-item"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    background: 'none',
-                    border: 'none',
-                    color: '#cbd5e1',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    textAlign: 'left'
-                  }}
-                >
-                  <span>👤</span>
-                  Profile Settings
-                </button>
-                
-                <button 
-                  className="dropdown-item"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    background: 'none',
-                    border: 'none',
-                    color: '#cbd5e1',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    textAlign: 'left'
-                  }}
-                >
-                  <span>⚙️</span>
-                  Preferences
-                </button>
-                
-                <button 
-                  className="dropdown-item"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    background: 'none',
-                    border: 'none',
-                    color: '#cbd5e1',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    textAlign: 'left'
-                  }}
-                >
-                  <span>💳</span>
-                  Billing
-                </button>
-                
-                <div style={{ height: '1px', background: 'rgba(71, 85, 105, 0.2)', margin: '4px 0' }}></div>
-                
-                <button 
-                  className="dropdown-item logout-item"
-                  onClick={() => {
-                    console.log('Logout clicked');
-                    setShowUserMenu(false);
-                    logout();
-                  }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    background: 'none',
-                    border: 'none',
-                    color: '#f87171',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    textAlign: 'left'
-                  }}
-                >
-                  <span>🚪</span>
-                  Sign Out
-                </button>
+                <div className="user-email">
+                  {user?.email || 'user@example.com'}
+                </div>
               </div>
-            )}
-          </div>
+              
+              <div style={{ height: '1px', background: 'var(--border-light)', margin: '4px 0' }}></div>
+              
+              <button className="dropdown-item">
+                <span>👤</span>
+                Profile
+              </button>
+              
+              <button className="dropdown-item">
+                <span>⚙️</span>
+                Settings
+              </button>
+              
+              <div style={{ height: '1px', background: 'var(--border-light)', margin: '4px 0' }}></div>
+              
+              <button 
+                className="dropdown-item logout-item"
+                onClick={() => {
+                  setShowUserMenu(false);
+                  logout();
+                }}
+              >
+                <span>🚪</span>
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
   );
+};
 };
 
 // Login/Register Component
