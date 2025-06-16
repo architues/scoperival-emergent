@@ -211,8 +211,7 @@ test_plan:
     - "Database Connection"
     - "Authentication and Login"
     - "Competitors Display"
-  stuck_tasks:
-    - "Competitors Display"
+  stuck_tasks: []
   test_all: true
   test_priority: "high_first"
 
