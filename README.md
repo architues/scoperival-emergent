@@ -176,3 +176,4 @@ If you encounter issues:
 3. Configure environment variables
 4. Set up MongoDB Atlas
 5. Test the complete application flow
+# Scoperival - Clean Dashboard with Analytics
