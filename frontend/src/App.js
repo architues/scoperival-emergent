@@ -280,6 +280,64 @@ const TopHeader = ({ user, logout, activeTab, stats = {} }) => {
               <div className="notification-icon">🔔</div>
               <div className="notification-badge">3</div>
             </button>
+            
+            {showNotifications && (
+              <div className="notifications-dropdown">
+                <div className="notifications-header">
+                  <h4>Notifications</h4>
+                  <button 
+                    className="mark-all-read"
+                    onClick={() => setShowNotifications(false)}
+                  >
+                    Mark all read
+                  </button>
+                </div>
+                
+                <div className="notifications-list">
+                  <div className="notification-item unread">
+                    <div className="notification-avatar">
+                      <span>🏢</span>
+                    </div>
+                    <div className="notification-content">
+                      <p className="notification-title">New competitor detected</p>
+                      <p className="notification-text">Stripe updated their pricing page</p>
+                      <span className="notification-time">2 hours ago</span>
+                    </div>
+                    <div className="notification-dot"></div>
+                  </div>
+                  
+                  <div className="notification-item unread">
+                    <div className="notification-avatar">
+                      <span>⚡</span>
+                    </div>
+                    <div className="notification-content">
+                      <p className="notification-title">High priority change</p>
+                      <p className="notification-text">OpenAI launched new features</p>
+                      <span className="notification-time">4 hours ago</span>
+                    </div>
+                    <div className="notification-dot"></div>
+                  </div>
+                  
+                  <div className="notification-item unread">
+                    <div className="notification-avatar">
+                      <span>📊</span>
+                    </div>
+                    <div className="notification-content">
+                      <p className="notification-title">Weekly report ready</p>
+                      <p className="notification-text">Your competitive analysis is ready</p>
+                      <span className="notification-time">1 day ago</span>
+                    </div>
+                    <div className="notification-dot"></div>
+                  </div>
+                </div>
+                
+                <div className="notifications-footer">
+                  <button className="view-all-notifications">
+                    View all notifications
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* User Menu */}
