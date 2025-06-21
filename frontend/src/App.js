@@ -1050,55 +1050,55 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {localCompetitors.map((competitor) => (
-          <div key={competitor.id} className="modern-card p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+          <div key={competitor.id} className="modern-card p-4">
+            <div className="flex justify-between items-start mb-3">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                   {competitor.company_name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">{competitor.company_name}</h3>
-                  <p className="text-blue-400 text-sm">{competitor.domain}</p>
+                  <h3 className="text-sm font-semibold text-white">{competitor.company_name}</h3>
+                  <p className="text-blue-400 text-xs">{competitor.domain}</p>
                 </div>
               </div>
               <button
                 onClick={() => handleDeleteCompetitor(competitor.id)}
-                className="text-red-400 hover:text-red-300 transition-colors p-1"
+                className="text-red-400 hover:text-red-300 transition-colors p-1 text-xs"
               >
                 ✕
               </button>
             </div>
             
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-sm">
+            <div className="space-y-2 mb-4">
+              <div className="flex justify-between text-xs">
                 <span className="text-slate-400">Pages Tracked</span>
                 <span className="text-blue-400 font-medium">{competitor.tracked_pages?.length || 0}</span>
               </div>
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs">
                 <span className="text-slate-400">Scan Frequency</span>
                 <span className="text-slate-300">24h</span>
               </div>
-              <div className="flex justify-between text-sm">
+              <div className="flex justify-between text-xs">
                 <span className="text-slate-400">Status</span>
                 <span className="text-green-400 font-medium">Active</span>
               </div>
               
               {competitor.tracked_pages && competitor.tracked_pages.length > 0 && (
-                <div className="space-y-2">
-                  <span className="text-slate-400 text-sm">Tracking:</span>
-                  {competitor.tracked_pages.slice(0, 3).map((page, index) => (
-                    <div key={index} className="flex items-center space-x-2 text-xs">
-                      <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-md capitalize">
+                <div className="space-y-1">
+                  <span className="text-slate-400 text-xs">Tracking:</span>
+                  {competitor.tracked_pages.slice(0, 2).map((page, index) => (
+                    <div key={index} className="flex items-center space-x-1 text-xs">
+                      <span className="px-1 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs capitalize">
                         {page.page_type}
                       </span>
-                      <span className="text-slate-500">{new URL(page.url).pathname}</span>
+                      <span className="text-slate-500 truncate">{new URL(page.url).pathname}</span>
                     </div>
                   ))}
-                  {competitor.tracked_pages.length > 3 && (
+                  {competitor.tracked_pages.length > 2 && (
                     <div className="text-xs text-slate-500">
-                      +{competitor.tracked_pages.length - 3} more pages
+                      +{competitor.tracked_pages.length - 2} more
                     </div>
                   )}
                 </div>
@@ -1108,11 +1108,11 @@ const CompetitorsTab = ({ competitors, onRefresh }) => {
             <button
               onClick={() => handleScan(competitor.id)}
               disabled={scanning[competitor.id]}
-              className="btn-electric w-full"
+              className="btn-electric w-full text-xs py-2"
             >
               {scanning[competitor.id] ? (
                 <div className="flex items-center justify-center">
-                  <div className="loading-spinner mr-2" style={{width: '16px', height: '16px'}}></div>
+                  <div className="loading-spinner mr-2" style={{width: '12px', height: '12px'}}></div>
                   Scanning...
                 </div>
               ) : (
