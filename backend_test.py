@@ -14,7 +14,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Backend URL from frontend/.env
-BACKEND_URL = "https://1877e182-be9e-41d5-af1b-2d9bbdaafcf5.preview.emergentagent.com"
+BACKEND_URL = "https://7a399e62-83c6-4fb2-959c-5b62d5296ba1.preview.emergentagent.com"
 API_URL = f"{BACKEND_URL}/api"
 
 # Test data
