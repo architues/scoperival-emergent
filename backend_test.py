@@ -90,6 +90,24 @@ def test_health_check():
         log_response(response, "CORS test POST")
         assert response.status_code == 200, f"CORS test POST failed with status {response.status_code}"
         logger.info("CORS test POST: PASSED")
+        
+        # Test CORS preflight for auth endpoints
+        headers = {
+            "Origin": "https://example.com",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "Content-Type, Authorization"
+        }
+        response = requests.options(f"{API_URL}/auth/login", headers=headers)
+        log_response(response, "CORS preflight for login")
+        assert response.status_code == 200, f"CORS preflight for login failed with status {response.status_code}"
+        assert "Access-Control-Allow-Origin" in response.headers, "Missing CORS headers in preflight response"
+        logger.info("CORS preflight for login: PASSED")
+        
+        response = requests.options(f"{API_URL}/auth/register", headers=headers)
+        log_response(response, "CORS preflight for register")
+        assert response.status_code == 200, f"CORS preflight for register failed with status {response.status_code}"
+        assert "Access-Control-Allow-Origin" in response.headers, "Missing CORS headers in preflight response"
+        logger.info("CORS preflight for register: PASSED")
     except Exception as e:
         logger.error(f"CORS test FAILED: {str(e)}")
         return False
@@ -151,6 +169,186 @@ def test_auth_login():
     except Exception as e:
         logger.error(f"User login test FAILED: {str(e)}")
         return False
+
+def test_detailed_authentication():
+    """Detailed testing of authentication flow"""
+    global register_auth_token, login_auth_token
+    logger.info("\n=== Detailed Authentication Testing ===")
+    
+    # 1. Test registration with new user
+    logger.info("1. Testing new user registration")
+    try:
+        response = requests.post(
+            f"{API_URL}/auth/register",
+            json=TEST_USER_REGISTER
+        )
+        log_response(response, "New user registration")
+        
+        if response.status_code == 200:
+            auth_data = response.json()
+            register_auth_token = auth_data.get("access_token")
+            assert register_auth_token, "No access token in registration response"
+            logger.info("New user registration: PASSED")
+            
+            # Verify token works with /me endpoint
+            me_response = requests.get(
+                f"{API_URL}/me",
+                headers={"Authorization": f"Bearer {register_auth_token}"}
+            )
+            log_response(me_response, "/me endpoint after registration")
+            assert me_response.status_code == 200, "/me endpoint failed after registration"
+            user_data = me_response.json()
+            assert user_data.get("email") == TEST_USER_REGISTER["email"], "Email mismatch in /me response"
+            logger.info("Token verification after registration: PASSED")
+        else:
+            logger.error(f"New user registration failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"New user registration test FAILED: {str(e)}")
+        return False
+    
+    # 2. Test registration with existing user (should fail)
+    logger.info("2. Testing registration with existing user (should fail)")
+    try:
+        response = requests.post(
+            f"{API_URL}/auth/register",
+            json=TEST_USER_REGISTER
+        )
+        log_response(response, "Duplicate user registration")
+        
+        if response.status_code == 400:
+            logger.info("Duplicate user registration correctly rejected: PASSED")
+        else:
+            logger.error(f"Duplicate user registration test FAILED: Expected 400, got {response.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"Duplicate user registration test FAILED: {str(e)}")
+        return False
+    
+    # 3. Test registration and login flow
+    logger.info("3. Testing registration and login flow")
+    try:
+        # Register new user
+        response = requests.post(
+            f"{API_URL}/auth/register",
+            json=TEST_USER_LOGIN
+        )
+        log_response(response, "Registration for login test")
+        
+        if response.status_code == 200:
+            logger.info("Registration for login test: PASSED")
+            
+            # Now try to login with this user
+            login_response = requests.post(
+                f"{API_URL}/auth/login",
+                json={
+                    "email": TEST_USER_LOGIN["email"],
+                    "password": TEST_USER_LOGIN["password"]
+                }
+            )
+            log_response(login_response, "Login after registration")
+            
+            if login_response.status_code == 200:
+                auth_data = login_response.json()
+                login_auth_token = auth_data.get("access_token")
+                assert login_auth_token, "No access token in login response"
+                logger.info("Login after registration: PASSED")
+                
+                # Verify token works with /me endpoint
+                me_response = requests.get(
+                    f"{API_URL}/me",
+                    headers={"Authorization": f"Bearer {login_auth_token}"}
+                )
+                log_response(me_response, "/me endpoint after login")
+                assert me_response.status_code == 200, "/me endpoint failed after login"
+                user_data = me_response.json()
+                assert user_data.get("email") == TEST_USER_LOGIN["email"], "Email mismatch in /me response"
+                logger.info("Token verification after login: PASSED")
+            else:
+                logger.error(f"Login after registration failed with status {login_response.status_code}")
+                return False
+        else:
+            logger.error(f"Registration for login test failed with status {response.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"Registration and login flow test FAILED: {str(e)}")
+        return False
+    
+    # 4. Test login with incorrect password
+    logger.info("4. Testing login with incorrect password")
+    try:
+        response = requests.post(
+            f"{API_URL}/auth/login",
+            json={
+                "email": TEST_USER_LOGIN["email"],
+                "password": "WrongPassword123!"
+            }
+        )
+        log_response(response, "Login with incorrect password")
+        
+        if response.status_code == 401:
+            logger.info("Login with incorrect password correctly rejected: PASSED")
+        else:
+            logger.error(f"Login with incorrect password test FAILED: Expected 401, got {response.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"Login with incorrect password test FAILED: {str(e)}")
+        return False
+    
+    # 5. Test login with non-existent user
+    logger.info("5. Testing login with non-existent user")
+    try:
+        response = requests.post(
+            f"{API_URL}/auth/login",
+            json={
+                "email": f"nonexistent.{uuid.uuid4()}@example.com",
+                "password": "Password123!"
+            }
+        )
+        log_response(response, "Login with non-existent user")
+        
+        if response.status_code == 401:
+            logger.info("Login with non-existent user correctly rejected: PASSED")
+        else:
+            logger.error(f"Login with non-existent user test FAILED: Expected 401, got {response.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"Login with non-existent user test FAILED: {str(e)}")
+        return False
+    
+    # 6. Test JWT token validation
+    logger.info("6. Testing JWT token validation")
+    try:
+        # Test with invalid token
+        response = requests.get(
+            f"{API_URL}/me",
+            headers={"Authorization": "Bearer invalid_token_here"}
+        )
+        log_response(response, "/me with invalid token")
+        
+        if response.status_code == 401:
+            logger.info("Invalid token correctly rejected: PASSED")
+        else:
+            logger.error(f"Invalid token test FAILED: Expected 401, got {response.status_code}")
+            return False
+        
+        # Test with malformed token
+        response = requests.get(
+            f"{API_URL}/me",
+            headers={"Authorization": "Bearer"}
+        )
+        log_response(response, "/me with malformed token")
+        
+        if response.status_code == 401:
+            logger.info("Malformed token correctly rejected: PASSED")
+        else:
+            logger.error(f"Malformed token test FAILED: Expected 401, got {response.status_code}")
+            return False
+    except Exception as e:
+        logger.error(f"JWT token validation test FAILED: {str(e)}")
+        return False
+    
+    return True
 
 def test_me_endpoint():
     """Test the /me endpoint to verify authentication"""
