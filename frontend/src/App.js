@@ -189,15 +189,19 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, user }) => 
   );
 };
 
-// Top Header Component - Simplified
-const TopHeader = ({ user, logout, activeTab }) => {
+// Top Header Component - Enhanced Modern Design
+const TopHeader = ({ user, logout, activeTab, stats = {} }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showUserMenu && !event.target.closest('.user-menu-container')) {
         setShowUserMenu(false);
+      }
+      if (showNotifications && !event.target.closest('.notifications-container')) {
+        setShowNotifications(false);
       }
     };
 
@@ -205,7 +209,7 @@ const TopHeader = ({ user, logout, activeTab }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showUserMenu]);
+  }, [showUserMenu, showNotifications]);
   
   const getPageTitle = (tab) => {
     const titles = {
@@ -222,67 +226,118 @@ const TopHeader = ({ user, logout, activeTab }) => {
     setShowUserMenu(!showUserMenu);
   };
 
+  const getStatusInfo = () => {
+    const totalCompetitors = stats?.total_competitors || 0;
+    const lastUpdated = new Date().toLocaleDateString('en-GB');
+    
+    return {
+      status: totalCompetitors > 0 ? 'Active' : 'Setup Required',
+      lastUpdated,
+      isActive: totalCompetitors > 0
+    };
+  };
+
+  const status = getStatusInfo();
+
   return (
-    <header className="top-header">
-      <div className="header-left">
-        <h1 className="page-title">{getPageTitle(activeTab)}</h1>
-        <p className="page-subtitle">Competitive intelligence platform</p>
-      </div>
-      
-      <div className="header-right">        
-        <div className="user-menu-container">
-          <button 
-            className="user-menu-trigger"
-            onClick={handleUserMenuClick}
-          >
-            <div className="user-avatar-header">
-              {user?.company_name?.charAt(0)?.toUpperCase() || 'U'}
+    <header className="modern-top-header">
+      <div className="header-content">
+        {/* Left Section - Status and Metrics */}
+        <div className="header-left-section">
+          <div className="status-section">
+            <div className="status-row">
+              <span className="status-label">STATUS</span>
+              <span className="status-label">LAST UPDATED</span>
             </div>
-            <span className="user-name-header">
-              {user?.company_name || 'User'}
-            </span>
-            <svg className="chevron-down" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M4.427 6.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 6H4.604a.25.25 0 00-.177.427z"/>
-            </svg>
-          </button>
+            <div className="status-values">
+              <span className={`status-value ${status.isActive ? 'active' : 'inactive'}`}>
+                {status.status}
+              </span>
+              <span className="date-value">{status.lastUpdated}</span>
+            </div>
+          </div>
           
-          {showUserMenu && (
-            <div className="user-dropdown-menu">
-              <div className="user-info-header">
-                <div className="user-name">
-                  {user?.company_name || 'User'}
-                </div>
-                <div className="user-email">
-                  {user?.email || 'user@example.com'}
-                </div>
-              </div>
-              
-              <div style={{ height: '1px', background: 'var(--border-light)', margin: '4px 0' }}></div>
-              
-              <button className="dropdown-item">
-                <span>👤</span>
-                Profile
-              </button>
-              
-              <button className="dropdown-item">
-                <span>⚙️</span>
-                Settings
-              </button>
-              
-              <div style={{ height: '1px', background: 'var(--border-light)', margin: '4px 0' }}></div>
-              
-              <button 
-                className="dropdown-item logout-item"
-                onClick={() => {
-                  setShowUserMenu(false);
-                  logout();
-                }}
-              >
-                <span>🚪</span>
-                Sign Out
-              </button>
+          <div className="metrics-section">
+            <div className="metric-card">
+              <span className="metric-trend negative">-3%</span>
+              <div className="metric-icon">⚡</div>
             </div>
-          )}
+            <div className="metric-main">
+              <div className="metric-number">{stats?.high_significance_changes || 0}</div>
+              <div className="metric-label">HIGH PRIORITY</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Section - User and Actions */}
+        <div className="header-right-section">
+          {/* Notifications */}
+          <div className="notifications-container">
+            <button 
+              className="notification-btn"
+              onClick={() => setShowNotifications(!showNotifications)}
+            >
+              <div className="notification-icon">🔔</div>
+              <div className="notification-badge">3</div>
+            </button>
+          </div>
+
+          {/* User Menu */}
+          <div className="user-menu-container">
+            <button 
+              className="modern-user-trigger"
+              onClick={handleUserMenuClick}
+            >
+              <div className="user-avatar-modern">
+                S
+              </div>
+              <span className="user-name-modern">scoperival</span>
+            </button>
+            
+            {showUserMenu && (
+              <div className="modern-user-dropdown">
+                <div className="dropdown-header">
+                  <div className="dropdown-title">scoperival</div>
+                  <div className="dropdown-email">{user?.email || 'ahaan.pandit@gmail.com'}</div>
+                </div>
+                
+                <div className="dropdown-divider"></div>
+                
+                <button className="modern-dropdown-item">
+                  <span className="item-icon">👤</span>
+                  Profile Settings
+                </button>
+                
+                <button className="modern-dropdown-item">
+                  <span className="item-icon">⚙️</span>
+                  Preferences
+                </button>
+                
+                <button className="modern-dropdown-item">
+                  <span className="item-icon">💳</span>
+                  Billing
+                </button>
+                
+                <div className="dropdown-divider"></div>
+                
+                <button 
+                  className="modern-dropdown-item logout-item"
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    logout();
+                  }}
+                >
+                  <span className="item-icon">🚪</span>
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Add Competitor Button */}
+          <button className="add-competitor-header-btn">
+            + Add Competitor
+          </button>
         </div>
       </div>
     </header>
