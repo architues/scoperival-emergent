@@ -24,13 +24,28 @@ TEST_USER = {
     "company_name": "Acme Analytics Inc."
 }
 
+# Additional test users for authentication testing
+TEST_USER_REGISTER = {
+    "email": f"register.test.{uuid.uuid4()}@example.com",
+    "password": "SecurePassword123!",
+    "company_name": "Register Test Company"
+}
+
+TEST_USER_LOGIN = {
+    "email": f"login.test.{uuid.uuid4()}@example.com",
+    "password": "SecurePassword123!",
+    "company_name": "Login Test Company"
+}
+
 TEST_COMPETITOR = {
     "domain": "stripe.com",
     "company_name": "Stripe Inc."
 }
 
-# Store auth token
+# Store auth tokens
 auth_token = None
+register_auth_token = None
+login_auth_token = None
 
 def log_response(response, endpoint):
     """Log response details"""
