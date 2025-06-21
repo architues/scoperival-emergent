@@ -628,6 +628,7 @@ def run_all_tests():
     results = {
         "Health Check API": test_health_check(),
         "Authentication API": test_auth_api() and test_me_endpoint(),
+        "Detailed Authentication": test_detailed_authentication(),
         "Competitors API": test_competitors_api(),
         "Database Connection": test_database_connection(),
         "Error Handling": test_error_handling()
