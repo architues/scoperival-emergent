@@ -741,7 +741,7 @@ body {
 .content-area {
   flex: 1;
   padding: 24px;
-  background: var(--bg-secondary);
+  background: var(--bg-tertiary);  /* Changed from var(--bg-secondary) to match dark theme */
 }
 
 /* Cards */
