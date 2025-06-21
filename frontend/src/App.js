@@ -592,7 +592,7 @@ const Dashboard = ({ user, logout }) => {
       />
       
       <div className={`main-content ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-        <TopHeader user={user} logout={logout} activeTab={activeTab} />
+        <TopHeader user={user} logout={logout} activeTab={activeTab} stats={stats} />
         
         <div className="content-area">
           <div className="fade-in">
